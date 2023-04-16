@@ -1,15 +1,26 @@
 package com.baladeyti.models;
 
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.Email;
 
 @Entity
 public class Personne {
 
+
+	
+	
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Id
 	@Column(name = "id_personne")
@@ -21,11 +32,20 @@ public class Personne {
 	
 	private int matricule;
 	
-	@Email
 	@Column(name="email")
+	@Email
 	private String email;
 	
 	private String password;
+	
+	
+	@ManyToMany
+	@JoinTable(
+			name = "user_roles",
+			joinColumns = @JoinColumn(name="user_id"),
+			inverseJoinColumns = @JoinColumn(name="role_id")
+			)
+	private Set<Role> roles;
 	
 	
 	
@@ -128,6 +148,20 @@ public class Personne {
 		this.password = password;
 	}
 
+
+
+	public Set<Role> getRoles() {
+		return roles;
+	}
+
+
+
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
+	}
+
+	
+	
 	
 	
 	

@@ -1,4 +1,4 @@
-package com.baladeyti.payload;
+package com.baladeyti.payload.requests;
 
 import jakarta.validation.constraints.NotBlank;
 

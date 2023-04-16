@@ -1,4 +1,6 @@
-package com.baladeyti.payload;
+package com.baladeyti.payload.requests;
+
+import java.util.Set;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -20,6 +22,8 @@ public class SignupRequest{
 	private int matricule;
 	
 	private int id;
+	
+	private Set<String> roles;
 	
 	
 	
@@ -63,6 +67,9 @@ public class SignupRequest{
 	}
 	public void setId(int id) {
 		this.id = id;
+	}
+	public Set<String> getRoles() {
+		return roles;
 	}
 	
 	
