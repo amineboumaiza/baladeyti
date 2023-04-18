@@ -25,9 +25,17 @@ public class SignupRequest{
 	
 	private Set<String> roles;
 	
-	
-	
-	
+	public SignupRequest(@NotBlank @Email String email, @NotBlank String password, @NotBlank String nom,
+			@NotBlank String prenom, @NotNull int matricule, int id, Set<String> roles) {
+		super();
+		this.email = email;
+		this.password = password;
+		this.nom = nom;
+		this.prenom = prenom;
+		this.matricule = matricule;
+		this.id = id;
+		this.roles = roles;
+	}
 	public String getNom() {
 		return nom;
 	}
