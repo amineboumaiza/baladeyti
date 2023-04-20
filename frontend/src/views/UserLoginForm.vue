@@ -4,20 +4,9 @@
     <div class="col-md-6 div1 text-center">
       <div class="container text-center">
         <br>
-      <h1>Créer un nouveau compte</h1> <br>
+      
       <form @submit.prevent="handleSubmit" method="post">
-        <div class="form-group">
-          <input class="form-control" required placeholder="Nom" type="text" name="nom" id="nom" v-model.trim="FormValues.nom"><br>
-        </div>
-        
-        <div class="form-group">
-          <input class="form-control" required placeholder="Prenom" type="text" name="prenom" id="prenom" v-model.trim="FormValues.prenom"><br>
-        </div>
-
-        <div class="form-group">
-          <input class="form-control" required placeholder="Matricule" type="text" name="matricule" id="matricule" v-model.trim="FormValues.matricule"><br>
-        </div>
-
+          <h1>Se Connecter</h1> <br>
         <div class="form-group">
           <input class="form-control" required placeholder="Email" type="email" name="email" id="email" v-model.trim="FormValues.email"><br>
         </div>
@@ -133,8 +122,9 @@ export default {
 
 
   h1{
-    font-size: 30px;
+    font-size: 40px;
     font-family: Century Gothic;
+    font-weight: bold;
 
   }
 
@@ -175,6 +165,11 @@ export default {
   background-color: #190131;
   color : white;
   transition: 0.5s;
+}
+
+form{
+  position: relative;
+  top: 80px;
 }
 
 </style>
