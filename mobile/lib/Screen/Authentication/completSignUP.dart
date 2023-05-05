@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/Screen/Authentication/SignUp.dart';
 
 import '../../Constant.dart';
 import '../Widget/RoundedButton.dart';
 import '../Widget/backgroundSignUp.dart';
+import 'SignUp.dart';
 
 class completeSignUp extends StatefulWidget {
   const completeSignUp({Key? key}) : super(key: key);
