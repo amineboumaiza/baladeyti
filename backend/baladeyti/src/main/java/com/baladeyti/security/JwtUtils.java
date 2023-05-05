@@ -118,7 +118,7 @@ public class JwtUtils {
 	
 	
 	public ResponseCookie cleanJwtCookie() {
-		return ResponseCookie.from(cookieName,null).path("/api").httpOnly(true).build();
+		return ResponseCookie.from(cookieName,null).path("/").httpOnly(true).build();
 	}
 	
 	public ResponseCookie cleanRefreshCookie() {

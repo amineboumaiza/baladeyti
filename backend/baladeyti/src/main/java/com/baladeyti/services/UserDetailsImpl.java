@@ -2,9 +2,12 @@ package com.baladeyti.services;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -51,13 +54,17 @@ private int id;
 	}
 
 	public static UserDetailsImpl build(Personne user,PasswordEncoder encoder) {
+		
+		List<GrantedAuthority> authorities = user.getRoles().stream().map(
+				role -> new SimpleGrantedAuthority(role.getRole().name())).collect(Collectors.toList());
+		
 		return new UserDetailsImpl(user.getId(),user.getNom(),user.getPrenom(),user.getMatricule()
-				,user.getEmail(),user.getPassword(),new ArrayList<>());
+				,user.getEmail(),user.getPassword(),authorities);
 	}
 	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return new ArrayList<>();
+		return this.authorites;
 	}
 
 	@Override

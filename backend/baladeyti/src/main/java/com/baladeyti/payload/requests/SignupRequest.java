@@ -25,6 +25,12 @@ public class SignupRequest{
 	
 	private Set<String> roles;
 	
+	
+
+	public SignupRequest() {
+		
+	}
+	
 	public SignupRequest(@NotBlank @Email String email, @NotBlank String password, @NotBlank String nom,
 			@NotBlank String prenom, @NotNull int matricule, int id, Set<String> roles) {
 		super();
