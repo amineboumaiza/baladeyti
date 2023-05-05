@@ -5,6 +5,11 @@ public class ProfileUserRequest {
 	private String email;
 	private String nom;
 	private String prenom;
+	
+	public ProfileUserRequest() {
+		
+	}
+	
 	public ProfileUserRequest(String email, String nom, String prenom) {
 		super();
 		this.email = email;

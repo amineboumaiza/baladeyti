@@ -67,7 +67,86 @@ public class AuthController {
 	private RefreshTokenService refreshTokenService;
 	
 	
+
+	@PostMapping("/signup/client")
+	public ResponseEntity<?> signupClient(@Valid @RequestBody SignupRequest request){
+		String nom = request.getNom();
+		String prenom = request.getPrenom();
+		String password = request.getPassword();
+		int matricule = request.getMatricule();
+		String email = request.getEmail();
+		Set<Role> rolesObj = new HashSet<>();
+		
+		if(personneRepository.findByEmail(email).isPresent())
+			return ResponseEntity.badRequest().body("error: Email already exists");
+		
+			Personne personne = new Personne(nom,prenom,matricule,email,encoder.encode(password));
+	
+			Role userRole = roleRepository.findByRole(ERole.ROLE_CLIENT);
+			rolesObj.add(userRole);
+			personne.setRoles(rolesObj);
+		
+		try {
+			personneRepository.save(personne);			
+		}catch(Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.internalServerError().body("error : We could not sign you up. Please try again!");
+		}
+		
+		
+		return ResponseEntity.ok().body(new SignupResponse(personne.getId()
+															,personne.getMatricule()
+															,personne.getNom()
+															,personne.getPrenom()
+															,personne.getEmail()
+															,personne.getRoles()));
+	}
+	
+	
+	@PostMapping("/signup/employe")
+	public ResponseEntity<?> signupEmploye(@Valid @RequestBody SignupRequest request){
+		String nom = request.getNom();
+		String prenom = request.getPrenom();
+		String password = request.getPassword();
+		int matricule = request.getMatricule();
+		String email = request.getEmail();
+		Set<Role> rolesObj = new HashSet<>();
+		
+		if(personneRepository.findByEmail(email).isPresent())
+			return ResponseEntity.badRequest().body("error: Email already exists");
+		
+			Personne personne = new Personne(nom,prenom,matricule,email,encoder.encode(password));
+	
+			Role userRole = roleRepository.findByRole(ERole.ROLE_EMPLOYE);
+			rolesObj.add(userRole);
+			personne.setRoles(rolesObj);
+		
+		try {
+			personneRepository.save(personne);			
+		}catch(Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.internalServerError().body("error : We could not sign you up. Please try again!");
+		}
+		
+		
+		return ResponseEntity.ok().body(new SignupResponse(personne.getId()
+															,personne.getMatricule()
+															,personne.getNom()
+															,personne.getPrenom()
+															,personne.getEmail()
+															,personne.getRoles()));
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	@PostMapping("/signup")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest request){
 		String nom = request.getNom();
 		String prenom = request.getPrenom();
@@ -116,6 +195,7 @@ public class AuthController {
 		try {
 			personneRepository.save(personne);			
 		}catch(Exception e) {
+			e.printStackTrace();
 			return ResponseEntity.internalServerError().body("error : We could not sign you up. Please try again!");
 		}
 		
@@ -127,6 +207,13 @@ public class AuthController {
 															,personne.getEmail()
 															,personne.getRoles()));
 	}
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	@PostMapping("/login")
@@ -155,9 +242,7 @@ public class AuthController {
 		List<String> roles = userDetails.getAuthorities().stream()
 		        .map(item -> item.getAuthority())
 		        .collect(Collectors.toList());
-		
-		
-		
+
 		return ResponseEntity.ok()
 				.header(HttpHeaders.SET_COOKIE,jwt.toString())
 				.header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
