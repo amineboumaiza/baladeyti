@@ -7,15 +7,13 @@ public class ProfileResponse {
 	private int id;
 	private String nom;
 	private String prenom;
-	private int matricule;
 	private String email;
 	private Set<String> roles;
-	public ProfileResponse(int id, String nom, String prenom, int matricule, String email, Set<String> roles) {
+	public ProfileResponse(int id, String nom, String prenom, String email, Set<String> roles) {
 		super();
 		this.id = id;
 		this.nom = nom;
 		this.prenom = prenom;
-		this.matricule = matricule;
 		this.email = email;
 		this.roles = roles;
 	}
@@ -36,12 +34,6 @@ public class ProfileResponse {
 	}
 	public void setPrenom(String prenom) {
 		this.prenom = prenom;
-	}
-	public int getMatricule() {
-		return matricule;
-	}
-	public void setMatricule(int matricule) {
-		this.matricule = matricule;
 	}
 	public String getEmail() {
 		return email;

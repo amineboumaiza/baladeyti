@@ -29,7 +29,6 @@ private int id;
 	
 	private String prenom;
 	
-	private int matricule;
 	
 	private String email;
 	
@@ -41,13 +40,12 @@ private int id;
 	
 	
 	
-	public UserDetailsImpl(int id, String nom, String prenom, int matricule, String email, String password,
+	public UserDetailsImpl(int id, String nom, String prenom, String email, String password,
 			Collection<? extends GrantedAuthority> authorites) {
 		super();
 		this.id = id;
 		this.nom = nom;
 		this.prenom = prenom;
-		this.setMatricule(matricule);
 		this.email = email;
 		this.password = password;
 		this.authorites = authorites;
@@ -58,7 +56,7 @@ private int id;
 		List<GrantedAuthority> authorities = user.getRoles().stream().map(
 				role -> new SimpleGrantedAuthority(role.getRole().name())).collect(Collectors.toList());
 		
-		return new UserDetailsImpl(user.getId(),user.getNom(),user.getPrenom(),user.getMatricule()
+		return new UserDetailsImpl(user.getId(),user.getNom(),user.getPrenom()
 				,user.getEmail(),user.getPassword(),authorities);
 	}
 	
@@ -138,14 +136,6 @@ private int id;
 
 	public void setPrenom(String prenom) {
 		this.prenom = prenom;
-	}
-
-	public int getMatricule() {
-		return matricule;
-	}
-
-	public void setMatricule(int matricule) {
-		this.matricule = matricule;
 	}
 
 	@Override

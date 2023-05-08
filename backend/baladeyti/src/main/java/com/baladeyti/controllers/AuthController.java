@@ -73,14 +73,13 @@ public class AuthController {
 		String nom = request.getNom();
 		String prenom = request.getPrenom();
 		String password = request.getPassword();
-		int matricule = request.getMatricule();
 		String email = request.getEmail();
 		Set<Role> rolesObj = new HashSet<>();
 		
 		if(personneRepository.findByEmail(email).isPresent())
 			return ResponseEntity.badRequest().body("error: Email already exists");
 		
-			Personne personne = new Personne(nom,prenom,matricule,email,encoder.encode(password));
+			Personne personne = new Personne(nom,prenom,email,encoder.encode(password));
 	
 			Role userRole = roleRepository.findByRole(ERole.ROLE_CLIENT);
 			rolesObj.add(userRole);
@@ -95,7 +94,6 @@ public class AuthController {
 		
 		
 		return ResponseEntity.ok().body(new SignupResponse(personne.getId()
-															,personne.getMatricule()
 															,personne.getNom()
 															,personne.getPrenom()
 															,personne.getEmail()
@@ -108,14 +106,13 @@ public class AuthController {
 		String nom = request.getNom();
 		String prenom = request.getPrenom();
 		String password = request.getPassword();
-		int matricule = request.getMatricule();
 		String email = request.getEmail();
 		Set<Role> rolesObj = new HashSet<>();
 		
 		if(personneRepository.findByEmail(email).isPresent())
 			return ResponseEntity.badRequest().body("error: Email already exists");
 		
-			Personne personne = new Personne(nom,prenom,matricule,email,encoder.encode(password));
+			Personne personne = new Personne(nom,prenom,email,encoder.encode(password));
 	
 			Role userRole = roleRepository.findByRole(ERole.ROLE_EMPLOYE);
 			rolesObj.add(userRole);
@@ -130,7 +127,7 @@ public class AuthController {
 		
 		
 		return ResponseEntity.ok().body(new SignupResponse(personne.getId()
-															,personne.getMatricule()
+														
 															,personne.getNom()
 															,personne.getPrenom()
 															,personne.getEmail()
@@ -151,7 +148,6 @@ public class AuthController {
 		String nom = request.getNom();
 		String prenom = request.getPrenom();
 		String password = request.getPassword();
-		int matricule = request.getMatricule();
 		String email = request.getEmail();
 		Set<String> roles = request.getRoles();
 		Set<Role> rolesObj = new HashSet<>();
@@ -161,7 +157,7 @@ public class AuthController {
 		
 		
 		
-		Personne personne = new Personne(nom,prenom,matricule,email,encoder.encode(password));
+		Personne personne = new Personne(nom,prenom,email,encoder.encode(password));
 		
 		
 		
@@ -201,7 +197,7 @@ public class AuthController {
 		
 		
 		return ResponseEntity.ok().body(new SignupResponse(personne.getId()
-															,personne.getMatricule()
+												
 															,personne.getNom()
 															,personne.getPrenom()
 															,personne.getEmail()

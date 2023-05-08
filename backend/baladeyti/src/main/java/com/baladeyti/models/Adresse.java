@@ -5,11 +5,15 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 public class Adresse {
 
@@ -21,6 +25,10 @@ public class Adresse {
 	private String ville;
 	@Column(name="code_postale")
 	private String codePostale;
+	@OneToOne
+	@JoinColumn(name="id_municipalite")
+	private Municipalite municipalite;
+
 	
 	
 	

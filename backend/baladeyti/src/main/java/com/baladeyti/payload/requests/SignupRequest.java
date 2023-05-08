@@ -18,8 +18,6 @@ public class SignupRequest{
 	private String nom;
 	@NotBlank
 	private String prenom;
-	@NotNull
-	private int matricule;
 	
 	private int id;
 	
@@ -32,13 +30,12 @@ public class SignupRequest{
 	}
 	
 	public SignupRequest(@NotBlank @Email String email, @NotBlank String password, @NotBlank String nom,
-			@NotBlank String prenom, @NotNull int matricule, int id, Set<String> roles) {
+			@NotBlank String prenom, int id, Set<String> roles) {
 		super();
 		this.email = email;
 		this.password = password;
 		this.nom = nom;
 		this.prenom = prenom;
-		this.matricule = matricule;
 		this.id = id;
 		this.roles = roles;
 	}
@@ -72,12 +69,6 @@ public class SignupRequest{
 	}
 	public int getId() {
 		return id;
-	}
-	public int getMatricule() {
-		return matricule;
-	}
-	public void setMatricule(int matricule) {
-		this.matricule = matricule;
 	}
 	public void setId(int id) {
 		this.id = id;

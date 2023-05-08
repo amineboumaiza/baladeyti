@@ -5,13 +5,15 @@ import java.io.Serializable;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Embeddable
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
-public class Ticketid implements Serializable {
+public class TicketId implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	

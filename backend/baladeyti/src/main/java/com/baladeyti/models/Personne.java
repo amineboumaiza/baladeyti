@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Email;
 
 @Entity
@@ -31,7 +32,6 @@ public class Personne {
 	
 	private String prenom;
 	
-	private int matricule;
 	
 	@Column(name="email")
 	@Email
@@ -60,23 +60,22 @@ public class Personne {
 
 
 
-	public Personne(String nom, String prenom, int matricule, @Email String email, String password) {
+	public Personne(String nom, String prenom, @Email String email, String password) {
 		super();
 		this.nom = nom;
 		this.prenom = prenom;
-		this.matricule = matricule;
 		this.email = email;
 		this.password = password;
 	}
 
 
 
-	public Personne(int id, String nom, String prenom, int matricule, @Email String email, String password) {
+	public Personne(int id, String nom, String prenom, @Email String email, String password) {
 		super();
 		this.id = id;
 		this.nom = nom;
 		this.prenom = prenom;
-		this.matricule = matricule;
+
 		this.email = email;
 		this.password = password;
 	}
@@ -119,15 +118,10 @@ public class Personne {
 
 
 
-	public int getMatricule() {
-		return matricule;
-	}
 
 
 
-	public void setMatricule(int matricule) {
-		this.matricule = matricule;
-	}
+
 
 
 

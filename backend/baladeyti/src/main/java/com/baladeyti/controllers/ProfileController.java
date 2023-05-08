@@ -1,6 +1,5 @@
 package com.baladeyti.controllers;
 
-import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -8,12 +7,9 @@ import java.util.stream.Collectors;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +25,7 @@ import com.baladeyti.payload.responses.ProfileResponse;
 import com.baladeyti.repositories.PersonneRepository;
 import com.baladeyti.services.UserDetailsImpl;
 
-import jakarta.websocket.server.PathParam;
+
 
 @RestController
 @RequestMapping("/profile")
@@ -52,14 +48,13 @@ public class ProfileController {
 		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		
 		String email = userDetails.getEmail();
-		int matricule = userDetails.getMatricule();
 		int id = userDetails.getId();
 		String nom = userDetails.getNom();
 		String prenom = userDetails.getPrenom();
 		Set<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority()).collect(Collectors.toSet());
 		
 		
-		ProfileResponse profile = new ProfileResponse(id,nom,prenom,matricule,email,roles);
+		ProfileResponse profile = new ProfileResponse(id,nom,prenom,email,roles);
 		
 		return ResponseEntity.ok().body(profile);
 		
@@ -81,7 +76,7 @@ public class ProfileController {
 						personne -> {
 							Set<String> roles = personne.getRoles().stream().map(role -> role.getRole().name()).collect(Collectors.toSet());
 							
-							return new ProfileResponse(personne.getId(),personne.getNom(),personne.getPrenom(),personne.getMatricule(),
+							return new ProfileResponse(personne.getId(),personne.getNom(),personne.getPrenom(),
 									personne.getEmail(),roles);
 						}
 						).collect(Collectors.toList());
@@ -118,7 +113,7 @@ public class ProfileController {
 		Set<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority()).collect(Collectors.toSet());
 		
 		
-		return ResponseEntity.ok().body(new ProfileResponse(personne.getId(), personne.getNom(), personne.getPrenom(), personne.getMatricule(), personne.getEmail(), roles));
+		return ResponseEntity.ok().body(new ProfileResponse(personne.getId(), personne.getNom(), personne.getPrenom(), personne.getEmail(), roles));
 		
 	}
 	
