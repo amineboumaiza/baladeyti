@@ -28,7 +28,7 @@ class AppBarMc extends StatelessWidget {
                 decoration: InputDecoration(
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none,
-                  hintText: 'Chercher un film',
+                  hintText: ' ',
                   prefixIcon: Icon(
                     Icons.search,
                     color: KBlackColor.withOpacity(0.8),

@@ -25,7 +25,7 @@ class splashScreen extends StatelessWidget {
                     duration: 1800,
                     splash: 'assets/splash.gif',
                     nextScreen:
-                         LoginPage(),
+                         signIn(),
                     splashTransition: SplashTransition.fadeTransition,
                     //   pageTransitionType: PageTransitionType.scale,
                     backgroundColor: Colors.white),

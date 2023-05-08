@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile/Models/Personne.dart';
 
-import '../../config.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -13,28 +13,28 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  Future<String?> _login() async {
+    final response = await http.post(
+        Uri.parse('http://10.0.2.2:8080/api/auth/login'),
+            headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+    
+      },
+        body:  
+            jsonEncode({'email': 'sabeurbenali3@gmail.com', 'password': 'saber'}));
 
-   Future<String?> _login() async {
-    final response = await http.post(Uri.parse('$BaseCnUrl/api/auth/signup'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode( {
-        "email": "sabeurbenali663@gmail.com",
-        "prenom": "sabeur",
-        "nom": "ben ali",
-        "password": "saber"
-      }),);
 
+  print("responce ${response.statusCode}");
     if (response.statusCode == 200) {
       Map res = json.decode(response.body) as Map<String, dynamic>;
-print("ahlmaaa");
- //     return res['token'] as String;
+      print(res);
+      //     return res['token'] as String;
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.
-      print("3assba");
-      throw Exception('Failed to register user');
+      
+      print("noon");
+      return null;
     }
   }
 

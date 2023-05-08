@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../../Constant.dart';
+import '../../Models/Personne.dart';
+import '../../Services/UserServices/UserServices.dart';
 import '../Authentication/SignIn.dart';
 import '../Widget/Loading.dart';
 import '../Widget/cardFilmTicket.dart';
+import 'ChangeInfo.dart';
 
 class Profil extends StatefulWidget {
   const Profil({Key? key}) : super(key: key);
@@ -14,13 +17,13 @@ class Profil extends StatefulWidget {
 
 class _ProfilState extends State<Profil> {
   String uID = '';
-  /*
-  UserApp _user = UserApp();
-
+late  UserApp _user ;
   Future<UserApp> getUserById(String id) async {
-    return await UserServices().getUserInfo(id);
+     _user =  await UserServices().getUserInfo(id);
+     print('yemchyy ! ');
+    return  ( _user);
   }
-*/
+
   @override
   void initState() {
     super.initState();
@@ -108,14 +111,9 @@ class _ProfilState extends State<Profil> {
             ),
             Center(
               child: FutureBuilder(
-                 // future: UserServices().getUserInfo(uID),
+                 future: UserServices().getUserInfo(uID),
                   builder: (context, snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.none:
-                        return const Text('No connection with data base !!!');
-                      case ConnectionState.waiting:
-                      return const Center(child: Loading());
-                      default:
+                  
                         if (snapshot.hasError) {
                           return Center(
                             child: Text(
@@ -126,33 +124,32 @@ class _ProfilState extends State<Profil> {
 
                           // if we got our data
                         } else if (snapshot.hasData) {
-                        //  _user = snapshot.data as UserApp;
+                         _user = snapshot.data as UserApp;
                           return Column(
                             children: [
                               Stack(
                                 children: [
-                                  ClipOval(
-                                    child: Material(
-                                      color: Colors.transparent,
-                                      child: Ink.image(
-                                        image: NetworkImage(
-                                           "_user.userAvatar.toString()"),
-                                        width: 200,
-                                        height: 200,
-                                        fit: BoxFit.cover,
-                                        child: InkWell(
-                                          onTap: () {},
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                    Image.asset(
+                  "assets/profilAvatar.jpg",
+                  height: size.width * 0.2,
+                ),
                                 ],
                               ),
                               const SizedBox(
                                 height: 40,
                               ),
                               Text(
-                               " _user.userName + ' ' + _user.userLastName",
+                                _user.name + ' ' + _user.lastName,
+                                style: const TextStyle(
+                                    fontSize: 20,
+                                    color: KBlackColor,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                                     const SizedBox(
+                                height: 40,
+                              ),
+                              Text(
+                                _user.email + ' ' ,
                                 style: const TextStyle(
                                     fontSize: 20,
                                     color: KBlackColor,
@@ -164,7 +161,7 @@ class _ProfilState extends State<Profil> {
                         return const Center(
                           child: Text("Missing Data"),
                         );
-                    }
+                    
                   }),
             ),
             const SizedBox(
@@ -187,14 +184,14 @@ class _ProfilState extends State<Profil> {
                 ),
               ),
               onPressed: () {
-                //_user.userUID = uID;
-             /*   Navigator.push(
+               
+              Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => ChangeInfo(
                             passedUser: _user,
                           )),
-                ); */
+                ); 
               },
               style: ElevatedButton.styleFrom(
                 primary: Colors.grey.shade400,
@@ -206,48 +203,7 @@ class _ProfilState extends State<Profil> {
             const SizedBox(
               height: 30,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FutureBuilder(
-             //     future: UserServices().getUsernbMovies(uID),
-                  builder: (context, snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.none:
-                        return const Text('No connection with data base !!!');
-                      case ConnectionState.waiting:
-                        return const Center(child: Loading());
-                      default:
-                        return cardFilm_ticket(
-                          size: size,
-                          text: snapshot.data.toString() + ' Films',
-                          color: KPinkColor,
-                        );
-                    }
-                  },
-                ),
-                const SizedBox(
-                  width: 30,
-                ),
-                FutureBuilder(
-                //  future: UserServices().getUserTicketnb(uID),
-                  builder: (context, snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.none:
-                        return const Text('No connection with data base !!!');
-                      case ConnectionState.waiting:
-                     //   return const Center(child: Loading());
-                      default:
-                        return cardFilm_ticket(
-                          size: size,
-                          text: snapshot.data.toString() + ' Tickets',
-                          color: Colors.lightBlue.shade200,
-                        );
-                    }
-                  },
-                ),
-              ],
-            )
+
           ],
         ),
       ),

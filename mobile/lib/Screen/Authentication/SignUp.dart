@@ -2,10 +2,12 @@
 import 'package:flutter/material.dart';
 
 import '../../Constant.dart';
+import '../../Services/Auth.dart';
 import '../Widget/RoundedButton.dart';
 import '../Widget/TextFieldContainer.dart';
 import '../Widget/backgroundSignUp.dart';
 import 'SignIn.dart';
+import 'completSignUP.dart';
 
 
 class signUp extends StatefulWidget {
@@ -16,9 +18,14 @@ class signUp extends StatefulWidget {
 }
 
 class _signInState extends State<signUp> {
-  bool _passwordVisible = true;
-  //final AuthService _authService = AuthService();
+  bool _passwordVisible = true; 
+   final AuthService _authService = AuthService();
+
   bool showPassword = true;
+  late String userPass;
+  late String userLastName;
+  late String userName;
+  late String userMail;
   RegExp exp = RegExp(r'^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$');
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   toastMsg(String msg, BuildContext theContext) {
@@ -30,27 +37,29 @@ class _signInState extends State<signUp> {
     ));
   }
 
- // UserApp user = UserApp();
-/*  submitLog(UserApp us, BuildContext theContext) async {
+ submitLog(   String userPass,
+   String userLastName,
+   String userName,
+   String userMail, BuildContext theContext) async {
     if (_formKey.currentState!.validate() == true) {
       try {
         // toastMsg("e-mail est utilisée", theContext);
-        if (await _authService.registerNewAgent(us) != null) {
+        if (await _authService.registerNewUser(userMail , userPass , userName , userLastName) != null) {
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(builder: (context) => const completeSignUp()),
               (route) => false);
         }
-      } on FirebaseAuthException catch (e) {
-        if (e.code == 'email-already-in-use') {
+      }  catch (e) {
+        if (e.toString() == 'Email already exists') {
           toastMsg("e-mail est utilisée", theContext);
-        } else if (e.code == 'weak-password') {
+        } else  {
           toastMsg("Mot de passe est faible !", theContext);
         }
       }
     }
   }
-*/
+
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
@@ -60,10 +69,10 @@ class _signInState extends State<signUp> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-             /*   Image.asset(
+               Image.asset(
                   "assets/logo.png",
                   width: size.width * 0.7,
-                ),*/
+                ),
                 const SizedBox(
                   height: 20,
                 ),
@@ -111,7 +120,7 @@ class _signInState extends State<signUp> {
                               ),
                               keyboardType: TextInputType.text,
                               onChanged: (newValue) {
-                              //  user.userLastName = newValue.toString();
+                            userLastName = newValue.toString();
                               },
                             ),
                             const SizedBox(height: 15),
@@ -142,43 +151,10 @@ class _signInState extends State<signUp> {
                               ),
                               keyboardType: TextInputType.text,
                               onChanged: (newValue) {
-                             //   user.userName = newValue.toString();
+                            userName = newValue.toString();
                               },
                             ),
-                            const SizedBox(height: 15),
-                            TextFormField(
-                              validator: (value) {
-                                if (value == '') {
-                                  return "le telephone est vide !";
-                                }
-                                if (value!.length != 12) {
-                                  return "le nemero doit étre 12 chiffre !";
-                                }
-                              },
-                              decoration: InputDecoration(
-                                hintText: '+216 ** *** ***',
-                                labelStyle: const TextStyle(color: KBlackColor),
-                                labelText: 'Telephone :',
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                  borderSide: const BorderSide(
-                                    color: KGreyColor,
-                                    width: 2.0,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                  borderSide: const BorderSide(
-                                    color: KBlackColor,
-                                    width: 2.0,
-                                  ),
-                                ),
-                              ),
-                              keyboardType: TextInputType.phone,
-                              onChanged: (newValue) {
-                              //  user.userPhone = newValue.toString();
-                              },
-                            ),
+                          
                             const SizedBox(height: 15),
                             TextFormField(
                               validator: (value) {
@@ -209,7 +185,7 @@ class _signInState extends State<signUp> {
                               ),
                               keyboardType: TextInputType.text,
                               onChanged: (newValue) {
-                             //   user.userMail = newValue.toString();
+                             userMail = newValue.toString();
                               },
                             ),
                             const SizedBox(height: 15),
@@ -254,7 +230,7 @@ class _signInState extends State<signUp> {
                                   border: InputBorder.none),
                               keyboardType: TextInputType.emailAddress,
                               onChanged: (newValue) {
-                             //   user.userPass = newValue.toString();
+                            userPass = newValue.toString();
                               },
                             ),
                           ],
@@ -273,30 +249,9 @@ class _signInState extends State<signUp> {
                   color: KPrimaryColor,
                   textColor: KWihteColor,
                   onPressed: () {
-                 /*   if (!connectivityChangeNotifier.connected) {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: const Text(
-                          'No Internet Connection!!!',
-                        ),
-                        backgroundColor: Colors.red,
-                        behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                        action: SnackBarAction(
-                          label: 'options',
-                          onPressed: () {
-                            print("snack is taped ");
-                            AppSettings.openWIFISettings();
-                          },
-                          textColor: Colors.white,
-                          disabledTextColor: Colors.grey,
-                        ),
-                      ));
-                    } else {
-                      submitLog(user, context);
-                    }
-                    */
+                
+                      submitLog(userPass ,userLastName, userName,userMail ,context);
+               
                   },
                 ),
                 const SizedBox(

@@ -4,11 +4,11 @@ import '../Constant.dart';
 import 'Widget/Loading.dart';
 
 
-class MyTicket extends StatefulWidget {
-  const MyTicket({Key? key}) : super(key: key);
+class MyHome extends StatefulWidget {
+  const MyHome({Key? key}) : super(key: key);
 
   @override
-  State<MyTicket> createState() => _MyTicketState();
+  State<MyHome> createState() => _MyHomeState();
 }
 
 /* List<TicketData> getALlTicketData(String id, BuildContext context) {
@@ -53,7 +53,7 @@ int cmpDates(String d1, String d2) {
   return DateTime.parse(d1).compareTo(DateTime.parse(d2));
 }
 
-class _MyTicketState extends State<MyTicket> {
+class _MyHomeState extends State<MyHome> {
   String uID = '';
   @override
   void initState() {

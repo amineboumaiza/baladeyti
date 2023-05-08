@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/Screen/HomePage.dart';
 
 import '../../Constant.dart';
 import '../Widget/RoundedButton.dart';
@@ -42,7 +43,7 @@ class _completeSignUpState extends State<completeSignUp> {
                   const SizedBox(height: 30),
                   const Center(
                     child: Text(
-                      "Vous pouvez maintenant achetez vos tickets en ligne ",
+                      "Vous pouvez maintenant réserver  vos tickets en ligne ",
                       style: TextStyle(
                         fontSize: 20,
                         color: KBlackColor,
@@ -51,11 +52,7 @@ class _completeSignUpState extends State<completeSignUp> {
                     ),
                   ),
                   const SizedBox(height: 45),
-                  Image.asset(
-                    "assets/logomc.png",
-                    width: size.width * 0.5,
-                  ),
-                  const SizedBox(height: 20),
+
                   RoundedButton(
                     text: "Continue",
                     color: KPrimaryColor,
@@ -64,7 +61,7 @@ class _completeSignUpState extends State<completeSignUp> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const signUp()),
+                            builder: (context) => const HomePage()),
                       );
                     },
                   ),

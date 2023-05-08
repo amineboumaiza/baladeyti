@@ -2,13 +2,14 @@
 import 'package:flutter/material.dart';
 
 import '../../Constant.dart';
+import '../../Models/Personne.dart';
 import '../Widget/RoundedButton.dart';
 import '../Widget/TextFieldContainer.dart';
 
 
 class ChangeInfo extends StatefulWidget {
-  //final UserApp passedUser;
- // const ChangeInfo({Key? key, required this.passedUser}) : super(key: key);
+  final UserApp passedUser;
+  const ChangeInfo({Key? key, required this.passedUser}) : super(key: key);
 
   @override
   _ChangeInfoState createState() => _ChangeInfoState();
@@ -26,8 +27,8 @@ class _ChangeInfoState extends State<ChangeInfo> {
     ));
   }
 
-  /*submitLog(UserApp us, bool passChange, BuildContext theContext) async {
-    if (_formKey.currentState!.validate() == true) {
+ submitLog(UserApp us, bool passChange, BuildContext theContext) async {
+   /* if (_formKey.currentState!.validate() == true) {
       try {
         if (await _authService.updateUSerInfo(us, passChange) != null) {
           Navigator.pop(theContext);
@@ -39,9 +40,9 @@ class _ChangeInfoState extends State<ChangeInfo> {
           toastMsg("Problem avec le serveur !", theContext);
         }
       }
-    }
+    }*/
   }
-*/
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool showPassword = true;
   String tempStr = '';
@@ -97,7 +98,7 @@ class _ChangeInfoState extends State<ChangeInfo> {
                                   children: [
                                     TextFormField(
                                       initialValue:
-                                          "widget.passedUser.userLastName",
+                                          widget.passedUser.name,
                                       validator: (value) {
                                         if (value == '') {
                                           return "Le nom est vide !";
@@ -127,13 +128,13 @@ class _ChangeInfoState extends State<ChangeInfo> {
                                       ),
                                       keyboardType: TextInputType.text,
                                       onChanged: (newValue) {
-                                        //widget.passedUser.userLastName =
-                                        //    newValue.toString();
+                                      widget.passedUser.lastName =
+                                            newValue.toString();
                                       },
                                     ),
                                     const SizedBox(height: 15),
                                     TextFormField(
-                                      //initialValue: widget.passedUser.userName,
+                                      initialValue: widget.passedUser.lastName,
                                       validator: (value) {
                                         if (value == '') {
                                           return "le prénom est vide !";
@@ -169,20 +170,19 @@ class _ChangeInfoState extends State<ChangeInfo> {
                                     ),
                                     const SizedBox(height: 15),
                                     TextFormField(
-                                    //  initialValue: widget.passedUser.userPhone,
+                                    initialValue: widget.passedUser.email,
                                       validator: (value) {
                                         if (value == '') {
-                                          return "le télèphone est vide !";
+                                          return "le email est vide !";
                                         }
-                                        if (value!.length != 12) {
-                                          return "le nemero doit étre 12 chiffre !";
-                                        }
+                                   
                                       },
                                       decoration: InputDecoration(
                                         hintText: '+216 ** *** ***',
+                                        
                                         labelStyle:
                                             const TextStyle(color: KBlackColor),
-                                        labelText: 'Télèphone :',
+                                        labelText: 'Email :',
                                         enabledBorder: OutlineInputBorder(
                                           borderRadius:
                                               BorderRadius.circular(5),

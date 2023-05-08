@@ -25,7 +25,7 @@ class _HomePageState extends State<HomePage> {
   Widget getBody(int index) {
     switch (index) {
       case 0:
-        return const MyTicket();
+        return const MyHome();
 
       case 1:
         return const MoviesList();
