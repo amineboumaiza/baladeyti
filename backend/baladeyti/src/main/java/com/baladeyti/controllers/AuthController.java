@@ -2,9 +2,8 @@ package com.baladeyti.controllers;
 
 
 
-import java.util.HashSet;
+
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +27,11 @@ import com.baladeyti.exceptions.TokenRefreshException;
 import com.baladeyti.models.ERole;
 import com.baladeyti.models.Personne;
 import com.baladeyti.models.RefreshToken;
-import com.baladeyti.models.Role;
 import com.baladeyti.payload.requests.LoginRequest;
 import com.baladeyti.payload.requests.SignupRequest;
 import com.baladeyti.payload.responses.LoginResponse;
 import com.baladeyti.payload.responses.SignupResponse;
 import com.baladeyti.repositories.PersonneRepository;
-import com.baladeyti.repositories.RoleRepository;
 import com.baladeyti.services.RefreshTokenService;
 import com.baladeyti.services.UserDetailsImpl;
 
@@ -55,9 +52,6 @@ public class AuthController {
 	private PersonneRepository personneRepository;
 	
 	@Autowired
-	private RoleRepository roleRepository;
-	
-	@Autowired
 	private PasswordEncoder encoder;
 	
 	@Autowired
@@ -74,16 +68,14 @@ public class AuthController {
 		String prenom = request.getPrenom();
 		String password = request.getPassword();
 		String email = request.getEmail();
-		Set<Role> rolesObj = new HashSet<>();
 		
 		if(personneRepository.findByEmail(email).isPresent())
 			return ResponseEntity.badRequest().body("error: Email already exists");
 		
 			Personne personne = new Personne(nom,prenom,email,encoder.encode(password));
 	
-			Role userRole = roleRepository.findByRole(ERole.ROLE_CLIENT);
-			rolesObj.add(userRole);
-			personne.setRoles(rolesObj);
+			
+			personne.setRole(ERole.ROLE_CLIENT);
 		
 		try {
 			personneRepository.save(personne);			
@@ -97,7 +89,7 @@ public class AuthController {
 															,personne.getNom()
 															,personne.getPrenom()
 															,personne.getEmail()
-															,personne.getRoles()));
+															,personne.getRole()));
 	}
 	
 	
@@ -107,16 +99,13 @@ public class AuthController {
 		String prenom = request.getPrenom();
 		String password = request.getPassword();
 		String email = request.getEmail();
-		Set<Role> rolesObj = new HashSet<>();
 		
 		if(personneRepository.findByEmail(email).isPresent())
 			return ResponseEntity.badRequest().body("error: Email already exists");
 		
 			Personne personne = new Personne(nom,prenom,email,encoder.encode(password));
 	
-			Role userRole = roleRepository.findByRole(ERole.ROLE_EMPLOYE);
-			rolesObj.add(userRole);
-			personne.setRoles(rolesObj);
+			personne.setRole(ERole.ROLE_EMPLOYE);
 		
 		try {
 			personneRepository.save(personne);			
@@ -131,7 +120,7 @@ public class AuthController {
 															,personne.getNom()
 															,personne.getPrenom()
 															,personne.getEmail()
-															,personne.getRoles()));
+															,personne.getRole()));
 	}
 	
 	
@@ -149,8 +138,8 @@ public class AuthController {
 		String prenom = request.getPrenom();
 		String password = request.getPassword();
 		String email = request.getEmail();
-		Set<String> roles = request.getRoles();
-		Set<Role> rolesObj = new HashSet<>();
+		String roleReq = request.getRole();
+		ERole role = ERole.ROLE_CLIENT;
 		
 		if(personneRepository.findByEmail(email).isPresent())
 			return ResponseEntity.badRequest().body("error: Email already exists");
@@ -163,30 +152,21 @@ public class AuthController {
 		
 		
 		
-		if(roles == null) {
-			Role userRole = roleRepository.findByRole(ERole.ROLE_CLIENT);
-			rolesObj.add(userRole);
-		}else {
-			roles.forEach(
+		if(roleReq != null) {
 					
-					role -> {switch(role) {
-					case "admin": 
-						Role admineRole = roleRepository.findByRole(ERole.ROLE_ADMIN);
-						rolesObj.add(admineRole);
+					switch(roleReq) {
+						case "admin": 
+							role = ERole.ROLE_ADMIN;
 						break;
-					case "employe":
-						Role empRole = roleRepository.findByRole(ERole.ROLE_EMPLOYE);
-						rolesObj.add(empRole);
+						case "employe":
+							role = ERole.ROLE_EMPLOYE;
 						break;
 						default:
-							Role userRole = roleRepository.findByRole(ERole.ROLE_CLIENT);
-							rolesObj.add(userRole);
-					
+							role = ERole.ROLE_CLIENT;
 						}
 					}
-				);
-		}
-		personne.setRoles(rolesObj);
+
+		personne.setRole(role);
 		
 		try {
 			personneRepository.save(personne);			
@@ -201,7 +181,7 @@ public class AuthController {
 															,personne.getNom()
 															,personne.getPrenom()
 															,personne.getEmail()
-															,personne.getRoles()));
+															,personne.getRole()));
 	}
 	
 	
@@ -238,11 +218,12 @@ public class AuthController {
 		List<String> roles = userDetails.getAuthorities().stream()
 		        .map(item -> item.getAuthority())
 		        .collect(Collectors.toList());
+		String role = roles.get(0);
 
 		return ResponseEntity.ok()
 				.header(HttpHeaders.SET_COOKIE,jwt.toString())
 				.header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-				.body(new LoginResponse(userDetails.getId(), userDetails.getNom(), userDetails.getPrenom(), userDetails.getEmail(), jwt.getValue(),refreshCookie.getValue(),roles));
+				.body(new LoginResponse(userDetails.getId(), userDetails.getNom(), userDetails.getPrenom(), userDetails.getEmail(), jwt.getValue(),refreshCookie.getValue(),role));
 	}
 	
 	

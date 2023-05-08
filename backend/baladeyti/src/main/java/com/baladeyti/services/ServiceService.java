@@ -22,5 +22,12 @@ public class ServiceService {
 			return null;
 		return service.get();
 	}
+
+	public Service findById(int idService) {
+		Optional<Service> service = serviceRepository.findById(idService);
+		if(service.isEmpty())
+			return null;
+		return service.get();
+	}
 	
 }

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TicketRequest {
 
-	private String nomMunicipalite;
-	private String nomService;
+	private int idMunicipalite;
+	private int idService;
 	
 }

@@ -53,9 +53,13 @@ public class TicketsController {
 		
 		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		
-		String nomService = ticketRequest.getNomService();
-		String nomMunicipalite = ticketRequest.getNomMunicipalite();
-		Integer maxNumTicket = ticketService.getMaxNumber(nomMunicipalite, nomService);
+		int idService = ticketRequest.getIdService();
+		int idMunicipalite = ticketRequest.getIdMunicipalite();
+		
+		Municipalite municipalite = municipaliteService.findById(idMunicipalite);
+		Service service = serviceService.findById(idService);
+		
+		Integer maxNumTicket = ticketService.getMaxNumber(municipalite.getId(), service.getId());
 		if(maxNumTicket == null)
 			maxNumTicket = 1;
 		else
@@ -63,17 +67,14 @@ public class TicketsController {
 		
 		int idPersonne = userDetails.getId();
 		Personne personne = personneRepository.findById(idPersonne).get();
-		Service service = serviceService.findByName(nomService);
-		Municipalite municipalite = municipaliteService.findByName(nomMunicipalite);
 		Date date = new Date();
-		String numTicket = nomMunicipalite + "-" + nomService + "-" + maxNumTicket ;
+		String numTicket = municipalite.getId() + "-" + service.getId() + "-" + maxNumTicket ;
 
 
 		Ticket ticket = new Ticket(numTicket,date,Eetat.en_attente,service,municipalite,personne);
 		Ticket savedTicket = ticketService.save(ticket);
-		TicketResponse response = new TicketResponse(savedTicket.getNum(),savedTicket.getIdMunicipalite().getNom(),savedTicket.getIdService().getNom(),savedTicket.getIdPersonne().getNom(),savedTicket.getDate(),savedTicket.getEtat());
 		
-		return ResponseEntity.ok().body(response);
+		return ResponseEntity.ok().body(savedTicket);
 	}
 	
 	
@@ -219,6 +220,32 @@ public class TicketsController {
 									ticket.getEtat()
 						)).collect(Collectors.toList());
 		return ResponseEntity.ok().body(ticketsResponse);
+		
+	}
+	
+	
+	
+	@GetMapping("/enCours")
+	public ResponseEntity<?> getEnCoursTickets(){
+		
+		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Personne personne  = personneRepository.findById(userDetails.getId()).get();
+		
+		List<Ticket> tickets = ticketService.findAllEnCours(personne);
+		
+		return ResponseEntity.ok().body(tickets);
+		
+	}
+	
+	@GetMapping("/history")
+	public ResponseEntity<?> getHistoryTickets(){
+		
+		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Personne personne  = personneRepository.findById(userDetails.getId()).get();
+		
+		List<Ticket> tickets = ticketService.findHistoryTickets(personne);
+		
+		return ResponseEntity.ok().body(tickets);
 		
 	}
 	

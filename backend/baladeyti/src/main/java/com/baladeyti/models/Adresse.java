@@ -25,9 +25,6 @@ public class Adresse {
 	private String ville;
 	@Column(name="code_postale")
 	private String codePostale;
-	@OneToOne
-	@JoinColumn(name="id_municipalite")
-	private Municipalite municipalite;
 
 	
 	

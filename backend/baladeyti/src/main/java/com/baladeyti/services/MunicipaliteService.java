@@ -23,5 +23,12 @@ public class MunicipaliteService {
 		return municipalite.get();
 	}
 	
+	public Municipalite findById(int id) {
+		Optional<Municipalite> municipalite = municipaliteRepository.findById(id);
+		if(municipalite.isEmpty())
+			return null;
+		return municipalite.get();
+	}
+	
 	
 }

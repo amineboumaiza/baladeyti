@@ -46,15 +46,16 @@ public class ProfileController {
 	public ResponseEntity<?> profile() {
 		
 		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		
 		String email = userDetails.getEmail();
 		int id = userDetails.getId();
 		String nom = userDetails.getNom();
 		String prenom = userDetails.getPrenom();
-		Set<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority()).collect(Collectors.toSet());
+		Personne personne = personneRepository.findById(id).get();
+		String role = personne.getRole().name();
 		
 		
-		ProfileResponse profile = new ProfileResponse(id,nom,prenom,email,roles);
+		
+		ProfileResponse profile = new ProfileResponse(id,nom,prenom,email,role);
 		
 		return ResponseEntity.ok().body(profile);
 		
@@ -74,10 +75,8 @@ public class ProfileController {
 		List<ProfileResponse> personnes = personneRepository.findAll()
 				.stream().map(
 						personne -> {
-							Set<String> roles = personne.getRoles().stream().map(role -> role.getRole().name()).collect(Collectors.toSet());
-							
 							return new ProfileResponse(personne.getId(),personne.getNom(),personne.getPrenom(),
-									personne.getEmail(),roles);
+									personne.getEmail(),personne.getRole().name());
 						}
 						).collect(Collectors.toList());
 		
@@ -110,10 +109,9 @@ public class ProfileController {
 		
 		personneRepository.save(personne);
 		
-		Set<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority()).collect(Collectors.toSet());
 		
 		
-		return ResponseEntity.ok().body(new ProfileResponse(personne.getId(), personne.getNom(), personne.getPrenom(), personne.getEmail(), roles));
+		return ResponseEntity.ok().body(new ProfileResponse(personne.getId(), personne.getNom(), personne.getPrenom(), personne.getEmail(), personne.getRole().name()));
 		
 	}
 	

@@ -53,8 +53,8 @@ private int id;
 
 	public static UserDetailsImpl build(Personne user,PasswordEncoder encoder) {
 		
-		List<GrantedAuthority> authorities = user.getRoles().stream().map(
-				role -> new SimpleGrantedAuthority(role.getRole().name())).collect(Collectors.toList());
+
+		List<GrantedAuthority> authorities = new ArrayList<>(List.of(new SimpleGrantedAuthority(user.getRole().name())));
 		
 		return new UserDetailsImpl(user.getId(),user.getNom(),user.getPrenom()
 				,user.getEmail(),user.getPassword(),authorities);
