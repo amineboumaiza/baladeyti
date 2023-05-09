@@ -1,7 +1,6 @@
 package com.baladeyti.repositories;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,7 +10,6 @@ import org.springframework.data.repository.query.Param;
 import com.baladeyti.models.Eetat;
 import com.baladeyti.models.Personne;
 import com.baladeyti.models.Ticket;
-import com.baladeyti.models.TicketId;
 
 public interface TicketRepository extends JpaRepository<Ticket, Integer>{
 

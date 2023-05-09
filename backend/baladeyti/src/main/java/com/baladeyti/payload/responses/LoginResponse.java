@@ -1,6 +1,5 @@
 package com.baladeyti.payload.responses;
 
-import java.util.List;
 
 import lombok.Data;
 

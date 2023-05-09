@@ -1,11 +1,13 @@
 package com.baladeyti.services;
 
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.baladeyti.models.Gouvernorat;
 import com.baladeyti.models.Municipalite;
 import com.baladeyti.repositories.MunicipaliteRepository;
 
@@ -30,5 +32,7 @@ public class MunicipaliteService {
 		return municipalite.get();
 	}
 	
-	
+	public List<Municipalite> findByGouvernorat(Gouvernorat gouvernorat){
+		return municipaliteRepository.findByGouvernorat(gouvernorat);
+	}
 }

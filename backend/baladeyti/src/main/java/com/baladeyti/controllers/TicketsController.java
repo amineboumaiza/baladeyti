@@ -7,10 +7,10 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,7 +25,6 @@ import com.baladeyti.models.Municipalite;
 import com.baladeyti.models.Personne;
 import com.baladeyti.models.Service;
 import com.baladeyti.models.Ticket;
-import com.baladeyti.models.TicketId;
 import com.baladeyti.payload.requests.TicketRequest;
 import com.baladeyti.payload.responses.TicketResponse;
 import com.baladeyti.repositories.PersonneRepository;
@@ -34,6 +33,8 @@ import com.baladeyti.services.ServiceService;
 import com.baladeyti.services.TicketService;
 import com.baladeyti.services.UserDetailsImpl;
 
+
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/tickets")
 public class TicketsController {

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 08, 2023 at 06:14 PM
+-- Generation Time: May 09, 2023 at 02:05 AM
 -- Server version: 10.4.20-MariaDB
 -- PHP Version: 7.3.29
 
@@ -54,6 +54,64 @@ CREATE TABLE `citoyen` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `gouvernorat`
+--
+
+CREATE TABLE `gouvernorat` (
+  `id_gouvernorat` int(11) NOT NULL,
+  `nom_gouvernorat` varchar(30) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `gouvernorat`
+--
+
+INSERT INTO `gouvernorat` (`id_gouvernorat`, `nom_gouvernorat`) VALUES
+(1, 'Ariana'),
+(2, 'Béja'),
+(3, 'Ben Arous'),
+(4, 'Bizerte'),
+(5, 'Gabès'),
+(6, 'Gafsa'),
+(7, 'Jendouba'),
+(8, 'Kairouan'),
+(9, 'Kasserine'),
+(10, 'Kébili'),
+(11, 'Le Kef'),
+(12, 'Mahdia'),
+(13, 'La Manouba'),
+(14, 'Médenine'),
+(15, 'Monastir'),
+(16, 'Nabeul'),
+(17, 'Sfax'),
+(18, 'Sidi Bouzid'),
+(19, 'Siliana'),
+(20, 'Sousse'),
+(21, 'Tataouine'),
+(22, 'Tozeur'),
+(23, 'Tunis'),
+(24, 'Zaghouan');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `gouvernorat_seq`
+--
+
+CREATE TABLE `gouvernorat_seq` (
+  `next_val` bigint(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `gouvernorat_seq`
+--
+
+INSERT INTO `gouvernorat_seq` (`next_val`) VALUES
+(1);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `guichet`
 --
 
@@ -89,15 +147,16 @@ INSERT INTO `guichet_seq` (`next_val`) VALUES
 CREATE TABLE `municipalite` (
   `id_municipalite` int(11) NOT NULL,
   `nom_municipalite` varchar(30) NOT NULL,
-  `id_adresse` int(11) NOT NULL
+  `id_adresse` int(11) NOT NULL,
+  `id_gouvernorat` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `municipalite`
 --
 
-INSERT INTO `municipalite` (`id_municipalite`, `nom_municipalite`, `id_adresse`) VALUES
-(1, 'Dar Chaabane El Fehri', 1);
+INSERT INTO `municipalite` (`id_municipalite`, `nom_municipalite`, `id_adresse`, `id_gouvernorat`) VALUES
+(1, 'Dar Chaabane El Fehri', 1, 16);
 
 -- --------------------------------------------------------
 
@@ -160,7 +219,8 @@ CREATE TABLE `refresh_token` (
 INSERT INTO `refresh_token` (`id`, `expiration`, `token`, `personne_id`) VALUES
 (64, '2023-05-18 14:59:42', 'ea7dc2c1-999d-40f0-afac-c1bccdb87f8f', 33),
 (65, '2023-05-18 15:01:45', 'cee6be1c-e9f3-4712-91ee-18656f42d407', 33),
-(66, '2023-05-18 15:08:36', '9e6e49f0-5cd7-4385-bfdd-53ce804161bd', 34);
+(66, '2023-05-18 15:08:36', '9e6e49f0-5cd7-4385-bfdd-53ce804161bd', 34),
+(67, '2023-05-18 23:01:52', 'cdb1c2dd-f92d-4f20-a2f5-dc9e507d2096', 34);
 
 -- --------------------------------------------------------
 
@@ -253,17 +313,6 @@ CREATE TABLE `travail` (
   `date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `user_roles`
---
-
-CREATE TABLE `user_roles` (
-  `user_id` int(11) NOT NULL,
-  `role_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 --
 -- Indexes for dumped tables
 --
@@ -281,6 +330,12 @@ ALTER TABLE `citoyen`
   ADD PRIMARY KEY (`id_citoyen`);
 
 --
+-- Indexes for table `gouvernorat`
+--
+ALTER TABLE `gouvernorat`
+  ADD PRIMARY KEY (`id_gouvernorat`);
+
+--
 -- Indexes for table `guichet`
 --
 ALTER TABLE `guichet`
@@ -292,7 +347,8 @@ ALTER TABLE `guichet`
 --
 ALTER TABLE `municipalite`
   ADD PRIMARY KEY (`id_municipalite`),
-  ADD KEY `id_adresse` (`id_adresse`);
+  ADD KEY `id_adresse` (`id_adresse`),
+  ADD KEY `id_gouvernorat` (`id_gouvernorat`);
 
 --
 -- Indexes for table `personne`
@@ -339,13 +395,6 @@ ALTER TABLE `travail`
   ADD KEY `id_guichet` (`id_guichet`);
 
 --
--- Indexes for table `user_roles`
---
-ALTER TABLE `user_roles`
-  ADD PRIMARY KEY (`user_id`,`role_id`),
-  ADD KEY `user_roles_ibfk_2` (`role_id`);
-
---
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -354,6 +403,12 @@ ALTER TABLE `user_roles`
 --
 ALTER TABLE `adresse`
   MODIFY `id_adress` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `gouvernorat`
+--
+ALTER TABLE `gouvernorat`
+  MODIFY `id_gouvernorat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `guichet`
@@ -377,7 +432,7 @@ ALTER TABLE `personne`
 -- AUTO_INCREMENT for table `refresh_token`
 --
 ALTER TABLE `refresh_token`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
 
 --
 -- AUTO_INCREMENT for table `role`
@@ -417,7 +472,8 @@ ALTER TABLE `guichet`
 -- Constraints for table `municipalite`
 --
 ALTER TABLE `municipalite`
-  ADD CONSTRAINT `municipalite_ibfk_1` FOREIGN KEY (`id_adresse`) REFERENCES `adresse` (`id_adress`);
+  ADD CONSTRAINT `municipalite_ibfk_1` FOREIGN KEY (`id_adresse`) REFERENCES `adresse` (`id_adress`),
+  ADD CONSTRAINT `municipalite_ibfk_2` FOREIGN KEY (`id_gouvernorat`) REFERENCES `gouvernorat` (`id_gouvernorat`);
 
 --
 -- Constraints for table `personne`
@@ -447,13 +503,6 @@ ALTER TABLE `travail`
   ADD CONSTRAINT `travail_ibfk_1` FOREIGN KEY (`id_citoyen`) REFERENCES `citoyen` (`id_citoyen`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `travail_ibfk_2` FOREIGN KEY (`id_guichet`) REFERENCES `guichet` (`id_guichet`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `travail_ibfk_3` FOREIGN KEY (`id_service`) REFERENCES `service` (`id_service`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `user_roles`
---
-ALTER TABLE `user_roles`
-  ADD CONSTRAINT `user_roles_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `personne` (`id_personne`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `user_roles_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `role` (`id_role`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

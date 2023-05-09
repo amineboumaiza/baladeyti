@@ -22,12 +22,14 @@ public class Municipalite {
 	private int id;
 	@Column(name="nom_municipalite")
 	private String nom;
-	//@OneToOne(mappedBy="municipalite")
-	//private Adresse adresse;
 	
 	@OneToOne
 	@JoinColumn(name="id_adresse")
 	private Adresse adresse;
+	
+	@OneToOne
+	@JoinColumn(name="id_gouvernorat")
+	private Gouvernorat gouvernorat;
 	
 	
 }

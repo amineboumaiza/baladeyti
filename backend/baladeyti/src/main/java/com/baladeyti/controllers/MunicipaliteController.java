@@ -1,37 +1,41 @@
 package com.baladeyti.controllers;
 
-import java.util.ArrayList;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.baladeyti.models.Adresse;
-import com.baladeyti.models.Municipalite;
-import com.baladeyti.repositories.AdresseRepository;
-import com.baladeyti.repositories.MunicipaliteRepository;
 
+import com.baladeyti.models.Gouvernorat;
+import com.baladeyti.models.Municipalite;
+import com.baladeyti.services.GouvernoratService;
+import com.baladeyti.services.MunicipaliteService;
+
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/municipalite")
 public class MunicipaliteController {
 
 	@Autowired
-	private MunicipaliteRepository municipaliteRepository;
+	private MunicipaliteService municipaliteService;
 	
 	@Autowired
-	private AdresseRepository adresseRepository;
+	private GouvernoratService gouvernoratService;
 	
-	@GetMapping("/{ville}")
-	public ResponseEntity<?> getAllMunicipaliteByVille(@PathVariable String ville){
+	@GetMapping("/gouvernorat/{idGouvernorat}")
+	public ResponseEntity<?> getAllMunicipaliteByVille(@PathVariable int idGouvernorat){
 		
-		List<Adresse> adresses = adresseRepository.findByVille(ville);
-		System.out.println(adresses);
-		List<Municipalite> municipalites = municipaliteRepository.findByAdresseIn(adresses);
-		
+		Gouvernorat gouvernorat = gouvernoratService.findById(idGouvernorat);
+		if(gouvernorat == null)
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("gouvernorat not found.");
+		List<Municipalite> municipalites = municipaliteService.findByGouvernorat(gouvernorat);
 		return ResponseEntity.ok().body(municipalites);
 		
 		
