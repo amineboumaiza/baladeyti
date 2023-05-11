@@ -37,13 +37,22 @@
 
 <script>
 import NavBar from './components/NavBar.vue';
-
+import axios from 'axios';
 
 export default {
   name: 'App',
   components : {
     NavBar,
-}
+},
+async created(){
+
+      const response = await axios.get("http://localhost:8080/profile");
+  
+      this.$store.commit('updateUser',response.data);
+
+      console.log(response.data);
+
+    },
 }
 </script>
 
@@ -61,6 +70,8 @@ export default {
       position: absolute;
       top: 450px;
       right: 0px;
+      z-index: -1;
+      cursor: pointer;
     }
 
     .svg2{

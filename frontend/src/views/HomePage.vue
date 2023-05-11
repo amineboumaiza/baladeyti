@@ -7,8 +7,8 @@
         </div>
 
         <div>
-            <router-link to="#">
-                <button class="btn en_sv_pls">En savoir Plus</button>
+            <router-link to="/addTicket">
+                <button class="btn reserver">Reserver maintenant</button>
             </router-link>
         </div>
         
@@ -20,9 +20,11 @@
 
 <script>
 export default {
-
+    name : "HomePage",
 }
 </script>
+
+
 
 <style scoped>
 h1{
@@ -41,19 +43,19 @@ span{
 }
 
 
-.en_sv_pls{
+.reserver{
   border-color: #9e3ffd;
   color:white;
   background-color: #9e3ffd;
   border-radius: 115px;
-  width: 150px;
+  width: 250px;
   height: 52px;
   padding: 0.5rem 1rem;
   font-size: 18px;
   font-family: Century Gothic;
 }
 
-.en_sv_pls:hover{
+.reserver:hover{
   border-color: #16012c;
   background-color: #16012c;
   color : #ffffff;

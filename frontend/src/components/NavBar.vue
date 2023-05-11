@@ -2,12 +2,9 @@
 
 
  <div class="container">
-     <nav class="navbar">
+     <nav v-if="!user" class="navbar">
 
       <a class="navbar-brand "><router-link to='/'><img src="../assets/logo.png" width="180" height="60" class="d-inline-block align-top" alt="Your Logo"></router-link> </a>
-
-      <div class="nav-item"><router-link to='#'> Lien 1</router-link></div> 
-      <div class="nav-item"><router-link to='#'>Lien 2</router-link></div> 
         
       <router-link to="/userRegister">
         <button class="btn signup">S'inscrire</button>
@@ -18,12 +15,24 @@
       </router-link>
         
      </nav>
+
+      <nav v-if="user" class="navbar">
+
+      <a class="navbar-brand "><router-link to='/'><img src="../assets/logo.png" width="180" height="60" class="d-inline-block align-top" alt="Your Logo"></router-link> </a>
+      
+       <div class="nav-item"><router-link to='#'>Mes Tickets</router-link></div> 
+      <div class="nav-item"><router-link to='#'>Historique</router-link></div> 
+
+      <router-link to="" @click="handleLogOut">
+        <button class="btn signup">Déconnecter</button>
+      </router-link>
+     </nav>
  </div>
 
 </template>
 
 <script>
-
+import Cookies from 'js-cookie';
 export default {
     name : "NavBar", 
     data(){
@@ -31,8 +40,20 @@ export default {
       }
     },
     methods:{
-    
-    }
+       handleLogOut(){
+        
+        Cookies.remove('jwt');
+
+        this.$router.push({name:'HomePage'})
+
+        this.$store.commit('updateUser',null);
+      }
+    },
+      computed : {
+      user(){
+        return this.$store.state.user;
+      } 
+    },
    
     
 }
@@ -80,7 +101,7 @@ border-color: #9e3ffd;
 
 .nav-item a{
   text-decoration: none;
-  font-size: 17px;
+  font-size: 20px;
   color : rgb(0, 0, 0);
   font-family: Century Gothic;
 }
