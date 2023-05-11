@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 import '../../Constant.dart';
+import '../../Models/Personne.dart';
 import '../../Services/Auth.dart';
 import '../Widget/RoundedButton.dart';
 import '../Widget/TextFieldContainer.dart';
@@ -44,13 +45,16 @@ class _signInState extends State<signUp> {
     if (_formKey.currentState!.validate() == true) {
       try {
         // toastMsg("e-mail est utilisée", theContext);
-        if (await _authService.registerNewUser(userMail , userPass , userName , userLastName) != null) {
+         UserApp?  a =  await _authService.registerNewUser(userMail , userPass , userName , userLastName);
+      if ( a != null) {
+        
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(builder: (context) => const completeSignUp()),
               (route) => false);
         }
       }  catch (e) {
+        print(e);
         if (e.toString() == 'Email already exists') {
           toastMsg("e-mail est utilisée", theContext);
         } else  {

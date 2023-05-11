@@ -50,7 +50,7 @@ class AuthService {
   }
 
 //register with email and password
-  Future registerNewUser(
+  Future<UserApp?>  registerNewUser(
       String mail, String pass, String nom, String prenom) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -62,10 +62,12 @@ class AuthService {
         },
         body: jsonEncode(
             {'email': mail, 'password': pass, 'nom': nom, 'prenom': prenom}));
-
+print(response.statusCode);
     if (response.statusCode == 200) {
-      Map<String, dynamic> res =
-          json.decode(response.body) as Map<String, dynamic>;
+            print('res 01 ');
+
+      Map<dynamic, dynamic> res = json.decode(response.body) as Map<dynamic, dynamic>;
+      print('res 11 ');
       print(res);
       String jwt = res['jwt'];
       String refreshToken = res['jwt'];

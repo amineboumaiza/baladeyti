@@ -21,7 +21,7 @@ class UserApp {
 
   UserApp.empty();
 
-  UserApp.fromMap(Map<String, dynamic> map) {
+  UserApp.fromMap(Map<dynamic, dynamic> map) {
     id = map["id"] ?? '';
     name = map['nom'] ?? '';
     lastName = map['prenom'] ?? '';
