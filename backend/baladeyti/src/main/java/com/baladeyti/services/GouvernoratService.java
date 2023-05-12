@@ -1,6 +1,7 @@
 package com.baladeyti.services;
 
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,19 @@ public class GouvernoratService {
 			return null;
 		return gouvernorat.get();
 		
+	}
+	
+	public List<Gouvernorat> findAll(){
+	
+		return gouvernoratRepository.findAll();
+		
+	}
+
+	public Gouvernorat findByName(String gouvName) {
+		Optional<Gouvernorat> gouvernorat = gouvernoratRepository.findByName(gouvName);
+		if(gouvernorat.isEmpty())
+			return null;
+		return gouvernorat.get();
 	}
 	
 	

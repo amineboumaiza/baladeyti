@@ -1,5 +1,6 @@
 package com.baladeyti.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class ServiceService {
 		if(service.isEmpty())
 			return null;
 		return service.get();
+	}
+	public List<Service> findAll(){
+		return serviceRepository.findAll();
 	}
 	
 }

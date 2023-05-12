@@ -29,8 +29,8 @@ public class MunicipaliteController {
 	@Autowired
 	private GouvernoratService gouvernoratService;
 	
-	@GetMapping("/gouvernorat/{idGouvernorat}")
-	public ResponseEntity<?> getAllMunicipaliteByVille(@PathVariable int idGouvernorat){
+	@GetMapping("/gouvernorat/id/{idGouvernorat}")
+	public ResponseEntity<?> getAllMunicipaliteByIdGouv(@PathVariable int idGouvernorat){
 		
 		Gouvernorat gouvernorat = gouvernoratService.findById(idGouvernorat);
 		if(gouvernorat == null)
@@ -38,8 +38,16 @@ public class MunicipaliteController {
 		List<Municipalite> municipalites = municipaliteService.findByGouvernorat(gouvernorat);
 		return ResponseEntity.ok().body(municipalites);
 		
+	}
+	
+	@GetMapping("/gouvernorat/name/{gouvName}")
+	public ResponseEntity<?> getAllMunicipaliteByNameGouv(@PathVariable String gouvName){
 		
-		
+		Gouvernorat gouvernorat = gouvernoratService.findByName(gouvName);
+		if(gouvernorat == null)
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("gouvernorat name not found!");
+		List<Municipalite> municipalites = municipaliteService.findByGouvernorat(gouvernorat);
+		return ResponseEntity.ok().body(municipalites);
 	}
 	
 	
