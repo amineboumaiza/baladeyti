@@ -27,6 +27,7 @@
           <input class="form-control" required placeholder="Matricule" type="text" name="matricule" id="matricule" v-model.trim="FormValues.matricule"><br>
         </div>
 
+
         <div class="form-group">
           <input class="form-control" required placeholder="Email" type="email" name="email" id="email" v-model.trim="FormValues.email"><br>
         </div>
@@ -57,6 +58,7 @@ export default {
                 nom: "",
                 prenom:"",
                 matricule:"",
+                adresse:"",
                 email: "",
                 password: "",
                 error:"",
@@ -66,7 +68,7 @@ export default {
     methods: {
         async handleSubmit() {
 
-              const response = await axios.post("http://localhost:8080/api/auth/signup", this.FormValues);
+              const response = await axios.post("http://localhost:8080/api/auth/signup/client", this.FormValues);
 
               if (response.status == 200){
                 this.$router.push({ name: "UserLoginForm" });
@@ -75,7 +77,8 @@ export default {
               else{
                 this.FormValues.error = "Invalid Informations.";
                 
-              }
+              } 
+         
            
         }
     },

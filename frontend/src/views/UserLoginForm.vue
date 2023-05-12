@@ -34,7 +34,7 @@
     </div>
   
 </div>
-  <ErrorMsg v-if="FormValues.error" :error="FormValues.error"/>
+  <ErrorMsg v-if="error" :error="error"/>
 </template>
 
 <script>
@@ -51,21 +51,23 @@ export default {
             FormValues:{
                 email : "",
                 password :"",
-                error:''
-            }
+            }, 
+            error:""
         }
     },
     methods : {
       async handleSubmit(){
         
         try {
-        const response = await axios.post("http://localhost:8080/api/auth/cookie/login",this.FormValues);
+        const response = await axios.post("http://localhost:8080/api/auth/login",this.FormValues);
 
-        const token = response.data;
+        const token = response.data.jwt;
 
         Cookies.set('jwt', token);
-
+        
         this.$router.push({name : "HomePage"});
+          
+        this.$store.commit('updateUser',response.data);
 
         }
         catch(e){
@@ -73,6 +75,12 @@ export default {
         }
       }
     },
+
+    computed : {
+      user(){
+        return this.$store.state.user;
+      }
+    }
   
 }
 </script>
