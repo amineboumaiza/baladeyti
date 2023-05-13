@@ -209,22 +209,19 @@ public class AuthController {
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		
 		
-		ResponseCookie jwt = jwtUtils.generateJwtCookie(authentication);
+		String jwt = jwtUtils.generateJwtToken(authentication);
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 		
 		
-		RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
+		/*RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 		ResponseCookie refreshCookie = jwtUtils.generateRefreshTokenCookie(refreshToken.getToken());
-		
+		*/
 		List<String> roles = userDetails.getAuthorities().stream()
 		        .map(item -> item.getAuthority())
 		        .collect(Collectors.toList());
 		String role = roles.get(0);
 
-		return ResponseEntity.ok()
-				.header(HttpHeaders.SET_COOKIE,jwt.toString())
-				.header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-				.body(new LoginResponse(userDetails.getId(), userDetails.getNom(), userDetails.getPrenom(), userDetails.getEmail(), jwt.getValue(),refreshCookie.getValue(),role));
+		return ResponseEntity.ok().body(new LoginResponse(userDetails.getId(), userDetails.getNom(), userDetails.getPrenom(), userDetails.getEmail(), jwt,null,role));
 	}
 	
 	
