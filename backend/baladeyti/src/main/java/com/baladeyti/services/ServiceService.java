@@ -34,4 +34,13 @@ public class ServiceService {
 		return serviceRepository.findAll();
 	}
 	
+	public Service save(Service service) {
+		
+		return serviceRepository.save(service);
+	}
+	
+	public void delete(Service service) {
+		serviceRepository.delete(service);
+	}
+	
 }

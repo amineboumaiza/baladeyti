@@ -2,10 +2,12 @@ package com.baladeyti.controllers;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.baladeyti.models.ERole;
 import com.baladeyti.models.Personne;
 import com.baladeyti.payload.requests.ProfileUserRequest;
 import com.baladeyti.payload.responses.ProfileResponse;
@@ -131,12 +134,7 @@ public class ProfileController {
 			e.printStackTrace();
 			return ResponseEntity.badRequest().body("An error occured while trying to delete the user.");
 		}
-		
 	}
-	
-	
-	
-	
 	
 	
 	

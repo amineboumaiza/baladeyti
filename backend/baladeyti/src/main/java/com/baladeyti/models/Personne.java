@@ -74,7 +74,19 @@ public class Personne {
 	}
 
 	
-	
+	public void update(Personne personne) {
+		
+		if(personne.getNom() != null) 
+			this.nom = personne.getNom();
+		if(personne.getPrenom() != null) 
+			this.prenom = personne.getPrenom();
+		if(personne.getEmail() != null) 
+			this.email = personne.getEmail();
+		if(personne.getAdresse() != null) 
+			this.adresse = personne.getAdresse();
+		if(personne.getRole() != null)
+			this.role = personne.getRole();
+	}
 	
 	
 	
