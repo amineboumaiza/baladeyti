@@ -16,23 +16,40 @@
         
      </nav>
 
-      <nav v-if="user" class="navbar">
+      <div v-if="user">
+      <nav v-if="user_t!='ROLE_ADMIN'"  class="navbar">
 
       <a class="navbar-brand "><router-link to='/'><img src="../assets/logo.png" width="180" height="60" class="d-inline-block align-top" alt="Your Logo"></router-link> </a>
       
-       <div class="nav-item"><router-link to='#'>Mes Tickets</router-link></div> 
-      <div class="nav-item"><router-link to='#'>Historique</router-link></div> 
+       <div class="nav-item"><router-link to='/mytickets'>Historique</router-link></div> 
+      <div class="nav-item"><router-link to='/todaytickets'>Today's Tickets</router-link></div> 
 
       <router-link to="" @click="handleLogOut">
-        <button class="btn signup">Déconnecter</button>
+        <button class="btn signup" >Déconnecter</button>
       </router-link>
      </nav>
+
+      <nav v-if="user_t=='ROLE_ADMIN'" class="navbar">
+
+      <a class="navbar-brand "><router-link to='/'><img src="../assets/logo.png" width="180" height="60" class="d-inline-block align-top" alt="Your Logo"></router-link> </a>
+      
+       <div class="nav-item"><router-link to='/alltickets'>Tickets</router-link></div> 
+      <div class="nav-item"><router-link to='#'>Clients</router-link></div> 
+      <div class="nav-item"><router-link to='#'>Employés</router-link></div> 
+      <div class="nav-item"><router-link to='#'>Services</router-link></div> 
+
+      <router-link to="" @click="handleLogOut">
+        <button class="btn signup" >Déconnecter</button>
+      </router-link>
+     </nav>
+
+     </div>
  </div>
 
 </template>
 
 <script>
-import Cookies from 'js-cookie';
+
 export default {
     name : "NavBar", 
     data(){
@@ -42,17 +59,20 @@ export default {
     methods:{
        handleLogOut(){
         
-        Cookies.remove('jwt');
-
+        localStorage.removeItem('token');
         this.$router.push({name:'HomePage'})
-
         this.$store.commit('updateUser',null);
+        this.$store.commit('updateUserType','');
       }
     },
       computed : {
       user(){
         return this.$store.state.user;
-      } 
+      },
+
+      user_t(){
+        return this.$store.state.user_t;
+      }
     },
    
     

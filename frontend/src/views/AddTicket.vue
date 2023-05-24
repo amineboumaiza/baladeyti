@@ -15,20 +15,20 @@
          <br> <br> <label>Municipalité :</label> <br> <br>
 
          <select class="form-select-lg col-3" 
-         v-model="selectedMunicipality">
+         v-model="selectedMunicipality" @change="logging">
           <option value="">Choisir votre municipalité</option>
-          <option v-for="municipality in municipalities" :value="municipality.id_municipalite " :key="municipality.id_municipalite ">
-            {{ municipality.nom_municipalite }}
+          <option v-for="municipality in this.municipalities" :value="municipality.id " :key="municipality.id">
+            {{ municipality.nom }}
           </option>
         </select> <br> <br>
 
       <label>Service :</label> <br> <br>
 
         <select class="form-select-lg col-3" 
-         v-model="selectedMunicipality">
+         v-model="selectedService" @change="logging">
           <option value="">Choisir un service</option>
-          <option v-for="municipality in municipalities" :value="municipality.id_municipalite " :key="municipality.id_municipalite ">
-            {{ municipality.nom_municipalite }}
+          <option v-for="service in this.services" :value="service.id " :key="service.id ">
+            {{ service.nom }}
           </option>
         </select> <br> <br> <br>
 
@@ -61,26 +61,28 @@ import axios from 'axios';
 
 export default {
   name : "AddTicket",
-    computed:{
-        user(){
-          return this.$store.state.user;
-        },
-    },
   data() {
     return {
-      selectedGovernorate: '',
+      FormValues:{
+        idService :0,
+        idMunicipalite :0
+            }, 
+      selectedService:'',
       selectedMunicipality: '',
+      selectedGovernorate: '',
       governorates: [],
-      municipalities: []
+      municipalities: [],
+      services : [],
     };
   },
   methods: {
      async getGovernorates() {
       
       try {
-        const response = await axios.get("/get all gouv api");
+        const response = await axios.get("http://localhost:8080/gouvernorat/all");
 
-        this.governorates = response;
+        
+        this.governorates = response.data;
 
         }
         catch(e){
@@ -90,11 +92,12 @@ export default {
     getMunicipalities() {
        if (this.selectedGovernorate) {
         //municipality by gouv name
-      const url = `http://localhost:8080/municipalite/gouvernorat/${this.selectedGovernorate}`;
+      const url = `http://localhost:8080/municipalite/gouvernorat/id/${this.selectedGovernorate}`;
 
       axios.get(url)
         .then(response => {
-          this.municipalities = response;
+          
+          this.municipalities = response.data;
         })
         .catch(e => {
           console.error(e);
@@ -104,21 +107,50 @@ export default {
     }
     },
 
+    async getServices() {
+      
+      try {
+        const response = await axios.get("http://localhost:8080/service/all");
+
+        this.services = response.data;
+
+        }
+        catch(e){
+          console.log(e);
+        }
+    },
+
+
+
      async handleSubmit(){
         
         try {
-        const response = await axios.post("http://localhost:8080/tickets/reserve",{});
+
+        this.FormValues.idService = this.selectedService;
+        this.FormValues.idMunicipalite = this.selectedMunicipality;
+        
+        const response = await axios.post("http://localhost:8080/tickets/reserve",this.FormValues);
         
         console.log(response);
+
+        this.$router.push({name : "TodayTickets"});
         } 
         catch(e){
           console.log(e);
         }
-      }
+      },
+
   },
   mounted() {
     this.getGovernorates();
-  } 
+    this.getServices();
+    
+  },
+   computed:{
+        user(){
+          return this.$store.state.user;
+        }
+    }
   
 };
 </script>

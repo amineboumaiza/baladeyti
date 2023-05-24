@@ -7,7 +7,7 @@
         </div>
 
         <div>
-            <router-link to="/addTicket">
+            <router-link to="/addTicket" v-if="user_t!='ROLE_ADMIN'">
                 <button class="btn reserver">Reserver maintenant</button>
             </router-link>
         </div>
@@ -21,6 +21,15 @@
 <script>
 export default {
     name : "HomePage",
+
+    computed : {
+      user(){
+        return this.$store.state.user;
+      },
+      user_t(){
+        return this.$store.state.user_t;
+      }
+    }
 }
 </script>
 

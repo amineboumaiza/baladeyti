@@ -50,7 +50,7 @@ async created(){
   
       this.$store.commit('updateUser',response.data);
 
-      console.log(response.data);
+      //console.log(response.data);
 
     },
 }
