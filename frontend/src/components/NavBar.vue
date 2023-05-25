@@ -34,8 +34,8 @@
       <a class="navbar-brand "><router-link to='/'><img src="../assets/logo.png" width="180" height="60" class="d-inline-block align-top" alt="Your Logo"></router-link> </a>
       
        <div class="nav-item"><router-link to='/alltickets'>Tickets</router-link></div> 
-      <div class="nav-item"><router-link to='#'>Clients</router-link></div> 
-      <div class="nav-item"><router-link to='#'>Employés</router-link></div> 
+      <div class="nav-item"><router-link to='/allclients'>Clients</router-link></div> 
+      <div class="nav-item"><router-link to='/allemployes'>Employés</router-link></div> 
       <div class="nav-item"><router-link to='#'>Services</router-link></div> 
 
       <router-link to="" @click="handleLogOut">
