@@ -60,11 +60,6 @@ export default {
         
         try {
         const response = await axios.post("http://localhost:8080/api/auth/login",this.FormValues);
-
-        //const token = response.data.jwt;
-
-       // Cookies.set('jwt', token);
-       
         
         localStorage.setItem('token',response.data.jwt);
         

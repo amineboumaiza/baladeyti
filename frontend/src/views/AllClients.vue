@@ -1,15 +1,30 @@
 <template>
-<div>
+<div class="container-fluid">
+<div class="d-flex align-items-center row">
 
-    <div v-if="user_t=='ROLE_ADMIN'" class="clients">
-        <div v-for="client in this.clients" :key="client.id" class="client">
-            <h4>{{client.id}}</h4>
-            <h4>{{client.nom}}</h4>
-            <h4>{{client.prenom}}</h4>
-            <h4>{{client.email}}</h4>
-            <h4>{{ client.adresse.ville }}</h4>
+    <div class="col-md-1"></div>
+        <div class="col-md-5">
 
+        <div class="clients" v-if="user_t=='ROLE_ADMIN'">
+            <div class=" mt-3 card" v-for="client in this.clients" :key="client.id">
+                <div class="row">
+                    <div class="col-3 d-flex flex-column justify-content-center align-items-center">
+                <img src="../assets/client.png" class="card-img-top" >
+                <h5 class="">{{client.id}}</h5>
+            </div>
+            <div class="col-9">
+                <div class="card-body employe">
+                    
+                    <h6>Nom : {{client.nom}}</h6>
+                    <h6>Prenom : {{client.prenom}}</h6>
+                    <h6>Email : {{client.email}}</h6>
+                    <h6>Ville : {{client.adresse.ville}}</h6>
+                </div>
+            </div>
+            </div>
         </div>
+        </div>
+    </div>
     </div>
 
     <div v-if="!user" class="not-logged-in">
@@ -25,7 +40,6 @@ export default {
     data(){
         return{
             clients : [],
-            
         }
     },
     methods : {
@@ -37,9 +51,8 @@ export default {
             }).catch((err) => {
                 console.error(err)
             });
-        },
-
-    } , 
+        },   
+    } ,
     mounted (){
          this.getClients()
     },
@@ -56,54 +69,84 @@ export default {
 
 </script>
 
-
-
-
 <style scoped>
-.clients {
-    display: flex;
-    flex-wrap: wrap;
+
+  .container-fluid{
     position: absolute;
-    top: 100px;
-    left : 70px;
-   
+    top: 15%;
+    left: 50px;
+  }
 
+  .form-fluid{
+    position: fixed;
+    top: 25%;
+    left: 50px;
+    border-radius: 15px;
+    box-shadow: 5px 5px 8px #888888;
+    background-color: white;
+    padding: 30px;
+  }
+
+  input{
+    height: 50px;
+  }
+
+.ajouter{
+  border-color: #9e3ffd;
+  color:white;
+  background-color: #9e3ffd;
+  border-radius: 115px;
+  width: 153px;
+  height: 52px;
+  padding: 0.5rem 1rem;
+  font-size: 18px;
+  font-family: Century Gothic;
 }
 
-.client {
-    position: relative;
-    border: 2px rgb(27, 27, 27) solid;
-    border-radius: 5px;
-    margin: 20px;
-    width : 300px;
-    height: 300px;
-    text-align: center;
-    padding-top: 20px;
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+.ajouter:hover{
+  border-color: #190131;
+  background-color: #190131;
+  color : white;
+  transition: 0.5s;
 }
 
-.client:hover {
-    cursor: pointer;
-    background: rgb(245, 244, 244);
-    transition: 0.2s;
-    transform: scale(1.06);
-    border: 2px solid;
-    border-color: #9e3ffd;
-    font-size: 16px;
-    font-family: cursive;
+.backAjout{
+  border-radius: 115px;
+  width: 153px;
+  height: 52px;
+  padding: 0.5rem 1rem;
+  font-size: 18px;
+  font-family: Century Gothic;
+}
+
+.backAjout:hover{
+  border-color: #190131;
+  background-color: #190131;
+  color : white;
+  transition: 0.5s;
+}
+
+
+.employes{
+    margin-bottom: 30px;
+}
+
+img{
+    width: 70px;
+    margin: 10px;
+    border-radius: 20%;
     
 }
 
-.not-logged-in{
-  font-weight:900;
-  font-family:cursive;
-  font-size: 45px;
-  text-align: center;
-  position: absolute;
-  top : 270px;
-  left: 100px;
+.hidden{
+    display: none;
 }
-span{
-  color: #09a146;
+
+.card:hover{
+    transition: 0.2s;
+    transform: scale(1.02);
+    
 }
+
+
 </style>

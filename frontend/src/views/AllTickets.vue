@@ -1,23 +1,35 @@
 <template>
-<div>
-
-    <div v-if="user_t=='ROLE_ADMIN'" class="tickets">
-        <div v-for="ticket in this.tickets" :key="ticket.numTicket" class="ticket">
-            <h4>{{ticket.numTicket}}</h4>
-            <h4>{{ticket.nomPersonne}}</h4>
-            <h4>{{ticket.nomService}}</h4>
-            <h4>{{ticket.nomMunicipalite}}</h4>
-            <h4>{{ticket.date}}</h4>
-            <h4>{{ticket.etat}}</h4>
-
-            
+    <section class="container">
+<h1>Ticket</h1>
+  <div class="row">
+    <article class="card fl-left">
+      <section class="date">
+        <time datetime="23th feb">
+          <span>23</span><span>feb</span>
+        </time>
+      </section>
+      <section class="card-cont">
+        <small>dj khaled</small>
+        <h3>live in sydney</h3>
+        <div class="even-date">
+         <i class="fa fa-calendar"></i>
+         <time>
+           <span>wednesday 28 december 2014</span>
+           <span>08:55pm to 12:00 am</span>
+         </time>
         </div>
-    </div>
-
-    <div v-if="!user" class="not-logged-in">
-      You Should Log in To see <span>The Tickets</span> 
-    </div> 
-</div>
+        <div class="even-info">
+          <i class="fa fa-map-marker"></i>
+          <p>
+            nexen square for people australia, sydney
+          </p>
+        </div>
+        <a href="#">tickets</a>
+      </section>
+    </article>
+    
+  </div>
+</section>
 </template>
 
 <script>
@@ -27,7 +39,6 @@ export default {
     data(){
         return{
             tickets : [],
-            
         }
     },
     methods : {
@@ -39,9 +50,8 @@ export default {
             }).catch((err) => {
                 console.error(err)
             });
-        },
-
-    } , 
+        },   
+    } ,
     mounted (){
          this.getTickets()
     },
@@ -58,54 +68,170 @@ export default {
 
 </script>
 
-
-
-
 <style scoped>
-.tickets {
-    display: flex;
-    flex-wrap: wrap;
-    position: absolute;
-    top: 100px;
-    left : 70px;
-   
+@import url('https://fonts.googleapis.com/css?family=Oswald');
 
+
+.fl-left {
+    float: left
 }
 
-.ticket {
+.fl-right {
+    float: right
+}
+
+h1 {
+    text-transform: uppercase;
+    font-weight: 900;
+    border-left: 10px solid #9e3ffd;
+    padding-left: 10px;
+    margin-bottom: 30px
+}
+
+.row {
+    overflow: hidden
+}
+
+.card {
+    display: table-row;
+    width: 49%;
+    background-color: #faf9f9;
+    color: #989898;
+    margin-bottom: 10px;
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    border-radius: 4px;
     position: relative;
-    border: 2px rgb(27, 27, 27) solid;
-    border-radius: 5px;
-    margin: 20px;
-    width : 300px;
-    height: 300px;
+}
+
+.card+.card {
+    margin-left: 2%
+}
+
+.date {
+    display: table-cell;
+    width: 25%;
+    position: relative;
     text-align: center;
-    padding-top: 20px;
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    border-right: 2px dashed #dadde6
 }
 
-.ticket:hover {
-    cursor: pointer;
-    background: rgb(245, 244, 244);
-    transition: 0.2s;
-    transform: scale(1.06);
-    border: 2px solid;
-    border-color: #9e3ffd;
-    font-size: 16px;
-    font-family: cursive;
-    
+.date:before,
+.date:after {
+    content: "";
+    display: block;
+    width: 30px;
+    height: 30px;
+    background-color: #ffffff;
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    z-index: 1;
+    border-radius: 50%
 }
 
-.not-logged-in{
-  font-weight:900;
-  font-family:cursive;
-  font-size: 45px;
-  text-align: center;
-  position: absolute;
-  top : 270px;
-  left: 100px;
+.date:after {
+    top: auto;
+    bottom: -15px
 }
-span{
-  color: #09a146;
+
+.date time {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%)
+}
+
+.date time span {
+    display: block
+}
+
+.date time span:first-child {
+    color: #2b2b2b;
+    font-weight: 600;
+    font-size: 250%
+}
+
+.date time span:last-child {
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-top: -10px
+}
+
+.card-cont {
+    display: table-cell;
+    width: 75%;
+    font-size: 85%;
+    padding: 10px 10px 30px 50px
+}
+
+
+.card-cont>div {
+    display: table-row
+}
+
+.card-cont .even-date i,
+.card-cont .even-info i,
+.card-cont .even-date time,
+.card-cont .even-info p {
+    display: table-cell
+}
+
+.card-cont .even-date i,
+.card-cont .even-info i {
+    padding: 5% 5% 0 0
+}
+
+.card-cont .even-info p {
+    padding: 30px 50px 0 0
+}
+
+.card-cont .even-date time span {
+    display: block
+}
+
+.card-cont a {
+    display: block;
+    text-decoration: none;
+    width: 80px;
+    height: 30px;
+    background-color: #D8DDE0;
+    color: #fff;
+    text-align: center;
+    line-height: 30px;
+    border-radius: 2px;
+    position: absolute;
+    right: 10px;
+    bottom: 10px
+}
+
+
+.row:last-child .card:last-child .card-cont a {
+    background-color: #F8504C
+}
+
+@media screen and (max-width: 860px) {
+    .card {
+        display: block;
+        float: none;
+        width: 100%;
+        margin-bottom: 10px
+    }
+    .card+.card {
+        margin-left: 0
+    }
+    .card-cont .even-date,
+    .card-cont .even-info {
+        font-size: 75%
+    }
+}
+
+.container{
+    position: absolute;
+    top: 150px;
+    left: 20px;
 }
 </style>

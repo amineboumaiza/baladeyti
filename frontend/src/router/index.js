@@ -5,9 +5,10 @@ import UserLoginForm from '../views/UserLoginForm.vue'
 import AddTicket from '../views/AddTicket.vue'
 import MyTickets from '../views/MyTickets.vue'
 import TodayTickets from '../views/TodayTickets.vue'
-import AllTickets from '../views/AllTickets.vue'
 import AllClients from '../views/AllClients.vue'
 import AllEmployes from '../views/AllEmployes.vue'
+import AllServices from '../views/AllServices.vue'
+import AllTickets from '../views/AllTickets.vue'
 
 const routes = [
   {
@@ -41,21 +42,27 @@ const routes = [
     component: TodayTickets,
   },
    {
-    path: '/alltickets',
-    name: 'AllTickets',
-    component: AllTickets,
-  },
-   {
     path: '/allclients',
     name: 'AllClients',
     component: AllClients,
   },
-
-    {
+  {
     path: '/allemployes',
     name: 'AllEmployes',
     component: AllEmployes,
   },
+   {
+    path: '/allservices',
+    name: 'AllServices',
+    component: AllServices,
+  },
+
+   {
+    path: '/alltickets',
+    name: 'AllTickets',
+    component: AllTickets,
+  },
+   
 ]
 
 const router = createRouter({

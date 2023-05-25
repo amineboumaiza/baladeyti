@@ -36,7 +36,7 @@
        <div class="nav-item"><router-link to='/alltickets'>Tickets</router-link></div> 
       <div class="nav-item"><router-link to='/allclients'>Clients</router-link></div> 
       <div class="nav-item"><router-link to='/allemployes'>Employés</router-link></div> 
-      <div class="nav-item"><router-link to='#'>Services</router-link></div> 
+      <div class="nav-item"><router-link to='/allservices'>Services</router-link></div> 
 
       <router-link to="" @click="handleLogOut">
         <button class="btn signup" >Déconnecter</button>

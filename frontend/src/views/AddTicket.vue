@@ -1,58 +1,54 @@
 <template>
-  <div>
-      <div v-if="user" class="container2">
-        <form @submit.prevent="handleSubmit" method="post">
-          <label>Gouvernorat :</label> <br> <br>
+  <div class="col-md-10 container-fluid row" v-if="user">
+    <div class="col-md-6 div1 text-center">
+      <br><br><br><br><br><br><br><br>
+      <span class="span1">Bienvenue !</span><br>
+      <span class="span2">Veuillez reserver une ticket ici</span>
+      <div>
 
-          <select class="form-select-lg col-3"
+      </div>
+    </div>
+    <div class="col-md-6 div2 text-center">
+      <div class="container text-center">
+        <br>
+      <h1>Réserver une ticket</h1> <br>
+      <form @submit.prevent="handleSubmit" method="post">
+        <div class="form-group">
+           <select class="form-control"
            v-model="selectedGovernorate" @change="getMunicipalities">
             <option value="">Choisir votre gouvernot</option>
             <option v-for="governorate in this.governorates" :value="governorate.idGouvernorat" :key="governorate.idGouvernorat">
               {{ governorate.name }}
             </option>
-          </select>
-
-         <br> <br> <label>Municipalité :</label> <br> <br>
-
-         <select class="form-select-lg col-3" 
+          </select><br>
+        </div>
+        
+        <div class="form-group">
+          <select class="form-control" 
          v-model="selectedMunicipality" @change="logging">
           <option value="">Choisir votre municipalité</option>
           <option v-for="municipality in this.municipalities" :value="municipality.id " :key="municipality.id">
             {{ municipality.nom }}
           </option>
-        </select> <br> <br>
+        </select><br>
+        </div>
 
-      <label>Service :</label> <br> <br>
-
-        <select class="form-select-lg col-3" 
+        <div class="form-group">
+          <select class="form-control" 
          v-model="selectedService" @change="logging">
           <option value="">Choisir un service</option>
           <option v-for="service in this.services" :value="service.id " :key="service.id ">
             {{ service.nom }}
           </option>
-        </select> <br> <br> <br>
-
-    
+        </select><br>
+        </div>
+        
         <button class="btn reserver"> Reserver</button>
-
-        </form>
-      </div>
-
-      <div v-if="!user" class="container">
-        <h1 class="dsl"> 
-        DÉSOLÉ, 
-        VOUS NE POUVEZ PAS VOIR CETTE PAGE. <br>
-        VOUS DEVEZ ETRE CONNECTER.
-      </h1>
-
-       <router-link to="/userLogin">
-        <button class="btn login">Se connecter</button>
-      </router-link>
-       
-      
-      </div>
-      
-  </div>
+      </form>
+    </div>
+    </div>
+  
+</div>
   
 </template>
 
@@ -158,30 +154,54 @@ export default {
 
 <style scoped>
 
+.container-fluid{
+    position: relative;
+    bottom: 120px;
+    left: 100px;
+    height: 380px;
+  }
 
-.container{
-text-align: center;
-}
-.dsl{
-  
-  font-family: cursive;
-  font-weight: bold;
-}
 
-form{
-  position: relative;
-  bottom: 200px;
-  left: 150px;
+  .div1{
+      background-image: linear-gradient(-90deg,#c58efc, #9e3ffd);
+      border-top-left-radius: 15px;
+      border-bottom-left-radius: 15px;
+  }
 
-}
+  .span1{
+    font-family: Century Gothic;
+    font-size: 45px;
+    font-weight: bolder;
+    color: white;
+    position: relative;
+    bottom: 50px;
+    justify-content: center;
+  }
 
-label{
-  font-family:cursive;
-  font-weight: 500;
-  font-size: 22px;
-}
+   .span2{
+    font-family: Century Gothic;
+    font-size: 16px;
+    color: white;
+    position: relative;
+    bottom: 40px;
+    text-align: center;
+    margin: 20px;
+  }
 
- .reserver{
+  .div2{
+      
+      background-image: linear-gradient(90deg,#ffffff, #f8f8f8);
+      border-top-right-radius: 15px;
+      border-bottom-right-radius: 15px;
+  }
+
+  h1{
+    font-size: 35px;
+    font-family: Century Gothic;
+
+  }
+
+  .reserver{
   border-color: #9e3ffd;
   color:white;
   background-color: #9e3ffd;
@@ -198,28 +218,6 @@ label{
   background-color: #190131;
   color : white;
   transition: 0.5s;
-}
-
-.login{
-  border-color: #9e3ffd;
-  color:#9e3ffd;
-  background-color: #ffffff;
-  border-radius: 115px;
-  width: 153px;
-  height: 52px;
-  padding: 0.5rem 1rem;
-  font-size: 18px;
-  font-family: Century Gothic;
-  margin-top: 40px;
-  cursor: pointer;
-  z-index: 1;
-}
-
-.login:hover{
-  border-color: #ffffff;
-  background-color: #9e3ffd;
-  color : #ffffff;
-  transition: 0.8s;
 }
 
 </style>
