@@ -2,7 +2,7 @@
 
 
  <div class="container">
-     <nav v-if="!user" class="navbar">
+     <nav v-if="!user && !type_admin" class="navbar">
 
       <a class="navbar-brand "><router-link to='/'><img src="../assets/logo.png" width="180" height="60" class="d-inline-block align-top" alt="Your Logo"></router-link> </a>
         
@@ -16,23 +16,42 @@
         
      </nav>
 
-      <nav v-if="user" class="navbar">
+      <div v-if="user && !type_admin">
+      <nav class="navbar">
 
       <a class="navbar-brand "><router-link to='/'><img src="../assets/logo.png" width="180" height="60" class="d-inline-block align-top" alt="Your Logo"></router-link> </a>
       
-       <div class="nav-item"><router-link to='#'>Mes Tickets</router-link></div> 
-      <div class="nav-item"><router-link to='#'>Historique</router-link></div> 
+       <div class="nav-item"><router-link to='/mytickets'>Historique</router-link></div> 
+      <div class="nav-item"><router-link to='/todaytickets'>Today's Tickets</router-link></div> 
 
       <router-link to="" @click="handleLogOut">
-        <button class="btn signup">Déconnecter</button>
+        <button class="btn signup" >Déconnecter</button>
       </router-link>
      </nav>
+     </div> 
+
+     <div v-if="type_admin">
+      <nav class="navbar">
+
+      <a class="navbar-brand "><router-link to='/'><img src="../assets/logo.png" width="180" height="60" class="d-inline-block align-top" alt="Your Logo"></router-link> </a>
+      
+       <div class="nav-item"><router-link to='/alltickets'>Tickets</router-link></div> 
+      <div class="nav-item"><router-link to='/allclients'>Clients</router-link></div> 
+      <div class="nav-item"><router-link to='/allemployes'>Employés</router-link></div> 
+      <div class="nav-item"><router-link to='/allservices'>Services</router-link></div> 
+
+      <router-link to="" @click="handleLogOut">
+        <button class="btn signup" >Déconnecter</button>
+      </router-link>
+     </nav>
+     </div>
+     
  </div>
 
 </template>
 
 <script>
-import Cookies from 'js-cookie';
+
 export default {
     name : "NavBar", 
     data(){
@@ -42,17 +61,20 @@ export default {
     methods:{
        handleLogOut(){
         
-        Cookies.remove('jwt');
-
+        localStorage.removeItem('token');
         this.$router.push({name:'HomePage'})
-
         this.$store.commit('updateUser',null);
+        this.$store.commit('updateTypeAdmin',null);
       }
     },
       computed : {
       user(){
         return this.$store.state.user;
-      } 
+      },
+
+      type_admin(){
+        return this.$store.state.type_admin;
+      }
     },
    
     

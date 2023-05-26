@@ -7,7 +7,7 @@
         </div>
 
         <div>
-            <router-link to="/addTicket">
+            <router-link to="/addTicket" v-if="!type_admin">
                 <button class="btn reserver">Reserver maintenant</button>
             </router-link>
         </div>
@@ -21,6 +21,23 @@
 <script>
 export default {
     name : "HomePage",
+    data() {
+    return {
+      hasRefreshed: false
+    };
+  },
+
+    computed : {
+      type_admin(){
+        return this.$store.state.type_admin;
+        },
+      },
+       mounted() {
+       if(!window.location.hash) {
+          window.location = window.location + '#loaded';
+          window.location.reload();
+        }
+       }
 }
 </script>
 

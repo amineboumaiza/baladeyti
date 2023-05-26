@@ -39,7 +39,7 @@
 
 <script>
 import axios from 'axios'
-import Cookies from 'js-cookie';
+//import Cookies from 'js-cookie';
 import ErrorMsg from '../components/ErrorMsg.vue'
 export default {
     name : "UserLoginForm",
@@ -60,18 +60,26 @@ export default {
         
         try {
         const response = await axios.post("http://localhost:8080/api/auth/login",this.FormValues);
-
-        const token = response.data.jwt;
-
-        Cookies.set('jwt', token);
+        
+        localStorage.setItem('token',response.data.jwt);
         
         this.$router.push({name : "HomePage"});
-          
-        this.$store.commit('updateUser',response.data);
+         
+
+        if (response.data.role == 'ROLE_CLIENT'){
+          this.$store.commit('updateUser',response.data); 
+        }
+           
+
+         if (response.data.role == 'ROLE_ADMIN'){
+          this.$store.commit('updateTypeAdmin',response.data);
+          this.$store.commit('updateUser',null); 
+        }        
+
 
         }
         catch(e){
-          this.FormValues.error = "Invalid Email/Password.";
+          this.FormValues.error = "Invalid Email/Password."; 
         }
       }
     },
@@ -79,6 +87,9 @@ export default {
     computed : {
       user(){
         return this.$store.state.user;
+      },
+      type_admin(){
+        return this.$store.state.type_admin;
       }
     }
   
