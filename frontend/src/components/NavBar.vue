@@ -23,7 +23,7 @@
       
        <div class="nav-item"><router-link to='/mytickets'>Historique</router-link></div> 
       <div class="nav-item"><router-link to='/todaytickets'>Today's Tickets</router-link></div> 
-
+      <div class="nav-item"><router-link to='/profile'>Profile</router-link></div> 
       <router-link to="" @click="handleLogOut">
         <button class="btn signup" >Déconnecter</button>
       </router-link>
@@ -39,6 +39,7 @@
       <div class="nav-item"><router-link to='/allclients'>Clients</router-link></div> 
       <div class="nav-item"><router-link to='/allemployes'>Employés</router-link></div> 
       <div class="nav-item"><router-link to='/allservices'>Services</router-link></div> 
+            <div class="nav-item"><router-link to='/profile'>Profile</router-link></div> 
 
       <router-link to="" @click="handleLogOut">
         <button class="btn signup" >Déconnecter</button>

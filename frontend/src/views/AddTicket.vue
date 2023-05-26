@@ -1,4 +1,10 @@
 <template>
+  <div>
+
+     <div v-if="!user">
+      <UserLoginForm />
+    </div>
+   
   <div class="col-md-10 container-fluid row" v-if="user">
     <div class="col-md-6 div1 text-center">
       <br><br><br><br><br><br><br><br>
@@ -49,14 +55,20 @@
     </div>
   
 </div>
-  
+
+
+</div>
 </template>
 
 <script>
 import axios from 'axios';
+import UserLoginForm from './UserLoginForm.vue'
 
 export default {
   name : "AddTicket",
+  components : {
+    UserLoginForm,
+  },
   data() {
     return {
       FormValues:{
@@ -72,8 +84,9 @@ export default {
     };
   },
   methods: {
+     //get all gouvernorats
      async getGovernorates() {
-      
+     
       try {
         const response = await axios.get("http://localhost:8080/gouvernorat/all");
 
@@ -85,9 +98,10 @@ export default {
           console.log(e);
         }
     },
+    //municipality by gouvernorat
     getMunicipalities() {
        if (this.selectedGovernorate) {
-        //municipality by gouv name
+        
       const url = `http://localhost:8080/municipalite/gouvernorat/id/${this.selectedGovernorate}`;
 
       axios.get(url)

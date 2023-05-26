@@ -9,6 +9,7 @@ import AllClients from '../views/AllClients.vue'
 import AllEmployes from '../views/AllEmployes.vue'
 import AllServices from '../views/AllServices.vue'
 import AllTickets from '../views/AllTickets.vue'
+import UserProfile from '../views/UserProfile.vue'
 
 const routes = [
   {
@@ -56,11 +57,15 @@ const routes = [
     name: 'AllServices',
     component: AllServices,
   },
-
    {
     path: '/alltickets',
     name: 'AllTickets',
     component: AllTickets,
+  },
+   {
+    path: '/profile',
+    name: 'UserProfile',
+    component: UserProfile,
   },
    
 ]
