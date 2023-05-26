@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/Screen/Authentication/SignIn.dart';
 import 'package:mobile/Screen/HomePage.dart';
 
 import '../../Constant.dart';
@@ -43,7 +44,7 @@ class _completeSignUpState extends State<completeSignUp> {
                   const SizedBox(height: 30),
                   const Center(
                     child: Text(
-                      "Vous pouvez maintenant réserver  vos tickets en ligne ",
+                      "Vous pouvez maintenant réserver  vos tickets en ligne \n  Vous devez d'abort S'authentifier  ",
                       style: TextStyle(
                         fontSize: 20,
                         color: KBlackColor,
@@ -54,14 +55,14 @@ class _completeSignUpState extends State<completeSignUp> {
                   const SizedBox(height: 45),
 
                   RoundedButton(
-                    text: "Continue",
+                    text: "S'authentifier",
                     color: KPrimaryColor,
                     textColor: KWihteColor,
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const HomePage()),
+                            builder: (context) => const signIn()),
                       );
                     },
                   ),

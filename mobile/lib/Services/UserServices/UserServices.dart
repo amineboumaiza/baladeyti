@@ -1,5 +1,3 @@
-
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Models/Personne.dart';
@@ -8,35 +6,32 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class UserServices {
-
-
   //get user personal info using ID
   Future<UserApp> getUserInfo(String id) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-      var url = Uri.parse('http://10.0.2.2:8080/profile');
-     String ? jwt=  prefs.getString('jwt');
-          String ? refreshToken=  prefs.getString('refreshToken');
-        var cookieValue = 'jwt=$jwt; refreshToken=$refreshToken';
-        print('jwt ');
-print(jwt);
-        print('refreshToken ');
-print(refreshToken);
-print(cookieValue);
-  var headers = {'Cookie': cookieValue};
+    var url = Uri.parse('http://10.0.2.2:8080/profile');
+    String? jwt = prefs.getString('jwt');
+    var auth= 'Bearer $jwt'; 
+    print('jwt ');
+    print(jwt);
+
+    print(auth);
+    var headers = {'Authorization': auth};
 
     late UserApp user;
-        final response = await http.get(url, headers: headers);
-      print(response.statusCode);
+    final response = await http.get(url, headers: headers);
+    print(response.statusCode);
 
     if (response.statusCode == 200) {
-                    print("yess ");
+      print("yess ");
 
-      Map<String, dynamic> res = json.decode(response.body) as Map<String, dynamic>;
+      Map<String, dynamic> res =
+          json.decode(response.body) as Map<String, dynamic>;
       print(res);
-       user = UserApp.fromMap(res);
-              prefs.setInt('UserID', user.id);
-              print("UserID ");
-        print(user.id);
+      user = UserApp.fromMap(res);
+      prefs.setInt('UserID', user.id);
+      print("UserID ");
+      print(user.id);
       return user;
       //     return res['token'] as String;
     } else {
@@ -45,7 +40,6 @@ print(cookieValue);
       print("noon get user info");
       throw Exception();
     }
-
   }
 
   //get user personal info using ID

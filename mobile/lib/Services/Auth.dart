@@ -25,22 +25,18 @@ class AuthService {
           json.decode(response.body) as Map<String, dynamic>;
       print(res);
       String jwt = res['jwt'];
-      String refreshToken = res['refreshToken'];
       print('jwt');
       print(jwt);
-      print('refreshToken');
 
-      print(refreshToken);
 
       user = UserApp.fromMap(res);
       prefs.setInt('UserID', user.id);
       prefs.setString('jwt', jwt);
-      prefs.setString('refreshToken', refreshToken);
 
       print("UserID ");
       print(user.id);
       return user;
-      //     return res['token'] as String;
+    
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.
@@ -50,13 +46,14 @@ class AuthService {
   }
 
 //register with email and password
-  Future<UserApp?>  registerNewUser(
+  Future<int?>  registerNewUser(
       String mail, String pass, String nom, String prenom) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     late UserApp user;
     final response = await http.post(
         Uri.parse('http://10.0.2.2:8080/api/auth/signup/client'),
+        
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -67,22 +64,13 @@ print(response.statusCode);
             print('res 01 ');
 
       Map<dynamic, dynamic> res = json.decode(response.body) as Map<dynamic, dynamic>;
-      print('res 11 ');
-      print(res);
-      String jwt = res['jwt'];
-      String refreshToken = res['jwt'];
-
-      user = UserApp.fromMap(res);
-      prefs.setInt('UserID', user.id);
-      print("UserID ");
-      print(user.id);
-      return user;
-      //     return res['token'] as String;
+      return 200;
     } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      print("noon");
+
+
       throw Exception();
+            return 400;
+
     }
   }
 

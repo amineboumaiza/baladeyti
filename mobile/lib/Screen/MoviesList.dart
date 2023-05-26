@@ -1,288 +1,205 @@
-// ignore_for_file: unnecessary_new, prefer_const_constructors
-
 import 'package:flutter/material.dart';
-
+import 'package:mobile/Models/Gouvernorat.dart';
+import 'package:mobile/Models/Ticket.dart';
+import 'package:mobile/Screen/CureentTicket.dart';
+import 'package:mobile/Services/TicketService.dart';
 import '../Constant.dart';
+import '../Models/Services.dart';
+import '../Models/municipality.dart';
+import '../Services/GouvernoratService.dart';
+import '../Services/MunicipalityService.dart';
+import '../Services/Service.dart';
 import 'Widget/AppBarMc.dart';
-import 'Widget/Loading.dart';
-
+import 'Widget/RoundedButton.dart';
 
 class MoviesList extends StatefulWidget {
-  const MoviesList({Key? key}) : super(key: key);
-
+  const MoviesList({super.key});
   @override
   State<MoviesList> createState() => _MoviesListState();
 }
 
-enum WidgetMarker { ALL, ByDate }
-String rakahdate(DateTime d) {
-  String ch = d.toString();
-  String ch2 =
-      ch[8] + ch[9] + '-' + ch[5] + ch[6] + '-' + ch[0] + ch[1] + ch[2] + ch[3];
-  return ch2;
-}
-
 class _MoviesListState extends State<MoviesList> {
-  Color c1 = KPrimaryColor;
-  Color c2 = KSecondaryColor;
-  WidgetMarker selectedWidgetMarker = WidgetMarker.ALL;
-  @override
-  Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-
-    Widget getAllMovies() {
-      return FutureBuilder(
-       //   future: MoviesServices().getAllMoviesDetailes(),
-          builder: (context, snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-                return const Text(
-                    'Pas de connexion avec la base de données !!!');
-              case ConnectionState.waiting:
-                return const Loading();
-              default:
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text(
-                      '${snapshot.error} occured',
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                  );
-
-                  // if we got our data
-                } else {
-                 // final lm = snapshot.data as List<Future<Movie>>;
-                  //all good to this point
-                  return RefreshIndicator(
-                    onRefresh: () async {
-                      setState(() {
-                        print("refreched");
-                      });
-                    },
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                     //   itemCount: lm.length,
-                        physics: const ClampingScrollPhysics(),
-                        itemBuilder: (BuildContext context, int index) {
-                          return FutureBuilder(
-                             // future: lm[index],
-                              builder: (context, snapshot) {
-                                if (snapshot.hasError) {
-                                  return Center(
-                                    child: Text(
-                                      '${snapshot.error} occured',
-                                      style: const TextStyle(fontSize: 18),
-                                    ),
-                                  );
-                                }
-                            /*    if (snapshot.hasData) {
-                                  Movie m = snapshot.data as Movie;
-                                  return cardPhoto(
-                                    size: size,
-                                    theMovie: m,
-                                  );
-                                }*/
-                                return const Loading();
-                              });
-                        }),
-                  );
-                }
-            }
-          });
-    }
-
-    Widget getCustomContainer() {
-      switch (selectedWidgetMarker) {
-        case WidgetMarker.ALL:
-          return getAllMovies();
-
-        case WidgetMarker.ByDate:
-          return getByDateMovie();
-        default:
-          return getAllMovies();
+  late List<ServiceModel> Allservice = List.empty(growable: true);
+  AppServices s = AppServices();
+  AppGouvernorat g = AppGouvernorat();
+  AppMunicipality m = AppMunicipality();
+  AppTicket _ticketService = AppTicket();
+  submitReserve(int idService, int idMuni, BuildContext theContext) async  {
+    if (idService >0 && idMuni>0) {
+       ticketModel?  T =  await _ticketService.ReseveTicket(idService, idMuni);
+      if ( T != null) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) =>  CurrentTicket( ticket: T,)),
+            (route) => false);
+      } else {
+        //toastMsg("Mot de passe incorrect !", theContext);
       }
     }
-
-    return Material(
-      child: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: () async {
-            setState(() {
-              print("refreched");
-            });
-          },
-          child: ListView(
-            shrinkWrap: true,
-            children: [
-              Column(
-                children: [
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  AppBarMc(size: size), // search + logo
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Center(
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          TextButton(
-                          /* color: c1,
-                            textColor: KWihteColor,
-                            minWidth: 120,*/
-                            onPressed: () {
-                              setState(() {
-                                selectedWidgetMarker = WidgetMarker.ALL;
-                                c1 = KPrimaryColor;
-                                c2 = KSecondaryColor;
-                              });
-                            },
-                            child: const Text(
-                              "Tous",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 17),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          TextButton(
-                         /*   color: c2,
-                            textColor: KWihteColor,
-                            minWidth: 120,*/
-                            child: const Text(
-                              "Selon date",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 17),
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                selectedWidgetMarker = WidgetMarker.ByDate;
-                                c2 = KPrimaryColor;
-                                c1 = KSecondaryColor;
-                              });
-                            },
-                          ),
-                        ]),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                ],
-              ),
-              getCustomContainer(),
-            ],
-          ),
-        ),
-      ),
-    );
   }
-}
-
-// ignore: camel_case_types
-
-class getByDateMovie extends StatefulWidget {
-  const getByDateMovie({
-    Key? key,
-  }) : super(key: key);
-
   @override
-  State<getByDateMovie> createState() => _getByDateMovieState();
-}
-
-class _getByDateMovieState extends State<getByDateMovie> {
-  String date_m = '';
-  void intiState() {
+  void initState() {
     super.initState();
-    date_m = rakahdate(DateTime.now());
+
   }
+
+  int _value = 0;
+  int _valueg = 1;
+  int _valuem = 0 ; 
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    return Column(
-      children: [
-        ElevatedButton.icon(
-          icon: const Icon(
-            Icons.calendar_today,
-            color: KBlackColor,
-            size: 24.0,
+    return Scaffold(
+      body: SafeArea(
+        child: Column(children: [
+          SizedBox(
+            height: 10,
           ),
-          label: const Text(
-            'Choisir une date',
-            style: TextStyle(color: KBlackColor, fontSize: 17),
+          AppBarMc(size: size),
+          SizedBox(
+            height: 10,
           ),
-          onPressed: () {
-          /*  DatePicker.showDatePicker(context,
-                showTitleActions: true,
-                minTime: DateTime(2018, 3, 5),
-                maxTime: DateTime(2030, 6, 7), onChanged: (date) {
-              date_m = rakahdate(date);
-            }, onConfirm: (date) {
-              setState(() {
-                date_m = rakahdate(date);
-              });
-            }, currentTime: DateTime.now(), locale: LocaleType.fr);*/
-          },
-          style: ElevatedButton.styleFrom(
-            primary: KSecondaryColor,
-            shape: new RoundedRectangleBorder(
-              borderRadius: new BorderRadius.circular(20.0),
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: Text(
+              'Réservez Vos tickets',
+              textAlign: TextAlign.left,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                color: KSecondaryColor,
+              ),
             ),
           ),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-      /*  SingleChildScrollView(
-          child: (date_m.isEmpty)
-              ? WaitingInput()
-              : FutureBuilder(
-                  future: MoviesServices().getMovieByDate(date_m),
-                  builder: (context, snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.none:
-                        return const Text(
-                            'Pas de connexion avec la base de données !!!');
-                      case ConnectionState.waiting:
-                        return const Loading();
-                      default:
-                        if (snapshot.hasError) {
-                          return Center(
-                            child: Text(
-                              '${snapshot.error} occured',
-                              style: const TextStyle(fontSize: 18),
-                            ),
+          FutureBuilder<Object>(
+              future: g.getAllservices(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  List<GouvernoratModel> g =
+                      snapshot.data as List<GouvernoratModel>;
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 20),
+                    child: DropdownButton(
+                        icon: Icon(
+                          Icons.arrow_drop_down,
+                          color: Colors.black,
+                        ),
+                        iconSize: 40,
+                        isExpanded: true,
+                        isDense: true,
+                        borderRadius: BorderRadius.circular(9),
+                        value: (_valueg == 0) ? null : _valueg,
+                        items: g.map<DropdownMenuItem>((GouvernoratModel gouv) {
+                          return DropdownMenuItem(
+                            value: gouv.id,
+                            child: Text(gouv.name),
                           );
-
-                          // if we got our data
-                        }
-                        if (date_m.isNotEmpty && !snapshot.hasData) {
-                          return NoResult();
-                        } else {
-                          if (snapshot.hasData) {
-                            final lm = snapshot.data as List<Movie>;
-                            //all good to this point
-                            return ListView.builder(
-                                physics: const ClampingScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: lm.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  Movie m = lm[index];
-                                  return cardPhoto(
-                                    size: size,
-                                    theMovie: m,
-                                  );
-                                });
-                          }
-                        }
-                        return const Loading();
-                    }
-                  }),
-        ),*/
-      ],
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            _valueg = int.parse(value.toString());
+                            print("hoony");
+                            print(_valueg);
+                            // await thefunc(_value);
+                            // setState(() {});
+                          });
+                        },
+                        hint: Text("Choisir Service")),
+                  );
+                }
+                return Text("out of the futyure");
+              }),
+          FutureBuilder<Object>(
+              future: m.getAllMunicipalities(_valueg),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  List<municipalityModel> m =
+                      snapshot.data as List<municipalityModel>;
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 20),
+                    child: DropdownButton(
+                        icon: Icon(
+                          Icons.arrow_drop_down,
+                          color: Colors.black,
+                        ),
+                        iconSize: 40,
+                        isExpanded: true,
+                        isDense: true,
+                        borderRadius: BorderRadius.circular(9),
+                        value: (_valuem == 0) ? null : _valuem,
+                        items: m.map<DropdownMenuItem>((municipalityModel muni) {
+                          return DropdownMenuItem(
+                            value: muni.id,
+                            child: Text(muni.name),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            _valuem = int.parse(value.toString());
+                            print("hoony");
+                            print(_valueg);
+                            // await thefunc(_value);
+                            // setState(() {});
+                          });
+                        },
+                        hint: Text("Choisir Municipalité")),
+                  );
+                }
+                return Text("Choisir");
+              }),
+          FutureBuilder<Object>(
+              future: s.getAllservices(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  List<ServiceModel> l = snapshot.data as List<ServiceModel>;
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 20),
+                    child: DropdownButton(
+                        icon: Icon(
+                          Icons.arrow_drop_down,
+                          color: Colors.black,
+                        ),
+                        iconSize: 40,
+                        isExpanded: true,
+                        isDense: true,
+                        borderRadius: BorderRadius.circular(9),
+                        value: (_value == 0) ? null : _value,
+                        items: l.map<DropdownMenuItem>((ServiceModel service) {
+                          return DropdownMenuItem(
+                            value: service.id,
+                            child: Text(service.name),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            _value = int.parse(value.toString());
+                            print("hoony");
+                            print(_value);
+                            // await thefunc(_value);
+                            // setState(() {});
+                          });
+                        },
+                        hint: Text("Choisir Service")),
+                  );
+                }
+                return Text("out of the futyure");
+              }),
+                          RoundedButton(
+                text: 'Reservez votre Ticket',
+                color: KPrimaryColor,
+                textColor: KWihteColor,
+                onPressed: () {
+                //  _login();
+                 submitReserve(_value, _valuem, context);
+                },
+              ),
+        ]),
+      ),
     );
   }
 }

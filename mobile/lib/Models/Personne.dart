@@ -3,19 +3,23 @@ class UserApp {
   String name = ' ';
   String lastName = '';
   String email = '';
+  String role = '';
 
 
   UserApp(
+    int ID,
     String usermail,
     String username,
     String userlastname,
-    String userBirthDate,
-    String userphone,
+    String userRole,
 
   ) {
+    this.id= ID;
     this.name = username;
     this.lastName = userlastname;
     this.email = usermail;
+      this.role = userRole;
+
 
   }
 
@@ -26,18 +30,18 @@ class UserApp {
     name = map['nom'] ?? '';
     lastName = map['prenom'] ?? '';
     email = map['email'] ?? '';
+    role=map['role']?? '';
   }
 
   set userMail(String userMail) {}
 
-  Map<String, dynamic> userToMap(UserApp user) {
+  Map<dynamic, dynamic> userToMap(UserApp user) {
     Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = user.id;
     data['nom'] = user.name;
     data['prenom'] = user.lastName;
     data['email'] = user.email;
-
-
+    data['role'] = user.role;
     return data;
   }
 }
