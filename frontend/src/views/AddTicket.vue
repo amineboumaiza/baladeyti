@@ -5,7 +5,7 @@
       <UserLoginForm />
     </div>
    
-  <div class="col-md-10 container-fluid row" v-if="user">
+  <div class="col-md-10 container-fluid row" v-if="type_client">
     <div class="col-md-6 div1 text-center">
       <br><br><br><br><br><br><br><br>
       <span class="span1">Bienvenue !</span><br>
@@ -158,8 +158,20 @@ export default {
   },
    computed:{
         user(){
-          return this.$store.state.user;
-        }
+        return this.$store.state.user;
+      },
+
+      type_admin(){
+        return this.$store.state.type_admin;
+      },
+
+      type_emp(){
+        return this.$store.state.type_emp;
+      },
+
+      type_client(){
+        return this.$store.state.type_client;
+      },
     }
   
 };

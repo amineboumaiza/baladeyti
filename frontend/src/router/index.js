@@ -10,6 +10,7 @@ import AllEmployes from '../views/AllEmployes.vue'
 import AllServices from '../views/AllServices.vue'
 import AllTickets from '../views/AllTickets.vue'
 import UserProfile from '../views/UserProfile.vue'
+import QueuePage from '../views/QueuePage.vue'
 
 const routes = [
   {
@@ -66,6 +67,11 @@ const routes = [
     path: '/profile',
     name: 'UserProfile',
     component: UserProfile,
+  },
+   {
+    path: '/queue',
+    name: 'QueuePage',
+    component: QueuePage,
   },
    
 ]
