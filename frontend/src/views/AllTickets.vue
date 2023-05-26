@@ -1,35 +1,39 @@
 <template>
-    <section class="container">
-<h1>Ticket</h1>
-  <div class="row">
-    <article class="card fl-left">
+<div >
+<section class="container" v-if="user" >
+<h1>Tickets</h1>
+  <div class="row" >
+    <article class="card fl-left" v-for="ticket in tickets" :key="ticket.id">
       <section class="date">
         <time datetime="23th feb">
-          <span>23</span><span>feb</span>
+          <span>{{ticket.date.slice(8,10)}}</span><span>{{ticket.date.slice(5,7)}}</span>
         </time>
       </section>
       <section class="card-cont">
-        <small>dj khaled</small>
-        <h3>live in sydney</h3>
+        <h3>{{ticket.numTicket}}</h3>
         <div class="even-date">
          <i class="fa fa-calendar"></i>
          <time>
-           <span>wednesday 28 december 2014</span>
-           <span>08:55pm to 12:00 am</span>
+           <span>{{ticket.nomPersonne}}</span>
+           <span>{{ticket.nomMunicipalite}}</span>
          </time>
         </div>
         <div class="even-info">
           <i class="fa fa-map-marker"></i>
           <p>
-            nexen square for people australia, sydney
+            {{ticket.nomService}}
           </p>
         </div>
-        <a href="#">tickets</a>
+        <a href="#">{{ticket.etat}}</a>
       </section>
     </article>
-    
+
   </div>
+  
 </section>
+</div>
+<br>
+<br>
 </template>
 
 <script>
@@ -45,8 +49,8 @@ export default {
         getTickets(){
             axios.get("http://localhost:8080/tickets/all")
             .then((res) => {
-               console.log(res.data)
-               this.tickets = res.data
+               this.tickets = res.data;
+    
             }).catch((err) => {
                 console.error(err)
             });
@@ -60,8 +64,8 @@ export default {
         user(){
           return this.$store.state.user;
         },
-        user_t(){
-          return this.$store.state.user_t;
+        type_admin(){
+          return this.$store.state.type_admin;
         },
     }
 }
@@ -72,13 +76,7 @@ export default {
 @import url('https://fonts.googleapis.com/css?family=Oswald');
 
 
-.fl-left {
-    float: left
-}
 
-.fl-right {
-    float: right
-}
 
 h1 {
     text-transform: uppercase;
@@ -88,25 +86,21 @@ h1 {
     margin-bottom: 30px
 }
 
-.row {
-    overflow: hidden
-}
 
 .card {
     display: table-row;
     width: 49%;
     background-color: #faf9f9;
-    color: #989898;
+    color: #2a0230;
     margin-bottom: 10px;
+    margin-right: 10px;
     font-family: 'Oswald', sans-serif;
     text-transform: uppercase;
     border-radius: 4px;
     position: relative;
 }
 
-.card+.card {
-    margin-left: 2%
-}
+
 
 .date {
     display: table-cell;
@@ -130,10 +124,6 @@ h1 {
     border-radius: 50%
 }
 
-.date:after {
-    top: auto;
-    bottom: -15px
-}
 
 .date time {
     display: block;
@@ -155,11 +145,6 @@ h1 {
     font-size: 250%
 }
 
-.date time span:last-child {
-    text-transform: uppercase;
-    font-weight: 600;
-    margin-top: -10px
-}
 
 .card-cont {
     display: table-cell;
@@ -168,10 +153,6 @@ h1 {
     padding: 10px 10px 30px 50px
 }
 
-
-.card-cont>div {
-    display: table-row
-}
 
 .card-cont .even-date i,
 .card-cont .even-info i,
@@ -199,7 +180,7 @@ h1 {
     width: 80px;
     height: 30px;
     background-color: #D8DDE0;
-    color: #fff;
+    color: #ffffff;
     text-align: center;
     line-height: 30px;
     border-radius: 2px;
@@ -209,8 +190,10 @@ h1 {
 }
 
 
-.row:last-child .card:last-child .card-cont a {
-    background-color: #F8504C
+.card-cont a {
+    background-color: #faf9f9;
+    color : black;
+    border: solid 1px #9e3ffd;
 }
 
 @media screen and (max-width: 860px) {
@@ -218,7 +201,8 @@ h1 {
         display: block;
         float: none;
         width: 100%;
-        margin-bottom: 10px
+        margin-bottom: 10px;
+        
     }
     .card+.card {
         margin-left: 0

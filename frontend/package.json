@@ -15,10 +15,12 @@
     "jquery": "^3.6.4",
     "js-cookie": "^3.0.1",
     "popper.js": "^1.16.1",
+    "secure-ls": "^1.2.6",
     "vue": "^3.2.13",
     "vue-axios": "^3.5.2",
     "vue-router": "^4.0.13",
-    "vuex": "^4.0.2"
+    "vuex": "^4.0.2",
+    "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

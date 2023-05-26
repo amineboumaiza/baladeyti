@@ -2,7 +2,7 @@
 
 
  <div class="container">
-     <nav v-if="!user" class="navbar">
+     <nav v-if="!user && !type_admin" class="navbar">
 
       <a class="navbar-brand "><router-link to='/'><img src="../assets/logo.png" width="180" height="60" class="d-inline-block align-top" alt="Your Logo"></router-link> </a>
         
@@ -16,8 +16,8 @@
         
      </nav>
 
-      <div v-if="user">
-      <nav v-if="user_t!='ROLE_ADMIN'"  class="navbar">
+      <div v-if="user && !type_admin">
+      <nav class="navbar">
 
       <a class="navbar-brand "><router-link to='/'><img src="../assets/logo.png" width="180" height="60" class="d-inline-block align-top" alt="Your Logo"></router-link> </a>
       
@@ -28,8 +28,10 @@
         <button class="btn signup" >Déconnecter</button>
       </router-link>
      </nav>
+     </div> 
 
-      <nav v-if="user_t=='ROLE_ADMIN'" class="navbar">
+     <div v-if="type_admin">
+      <nav class="navbar">
 
       <a class="navbar-brand "><router-link to='/'><img src="../assets/logo.png" width="180" height="60" class="d-inline-block align-top" alt="Your Logo"></router-link> </a>
       
@@ -42,8 +44,8 @@
         <button class="btn signup" >Déconnecter</button>
       </router-link>
      </nav>
-
      </div>
+     
  </div>
 
 </template>
@@ -62,7 +64,7 @@ export default {
         localStorage.removeItem('token');
         this.$router.push({name:'HomePage'})
         this.$store.commit('updateUser',null);
-        this.$store.commit('updateUserType','');
+        this.$store.commit('updateTypeAdmin',null);
       }
     },
       computed : {
@@ -70,8 +72,8 @@ export default {
         return this.$store.state.user;
       },
 
-      user_t(){
-        return this.$store.state.user_t;
+      type_admin(){
+        return this.$store.state.type_admin;
       }
     },
    

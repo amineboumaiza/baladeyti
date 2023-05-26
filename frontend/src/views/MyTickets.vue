@@ -64,8 +64,8 @@ export default {
         user(){
           return this.$store.state.user;
         },
-        user_t(){
-          return this.$store.state.user_t;
+        type_admin(){
+          return this.$store.state.type_admin;
         },
     }
 }

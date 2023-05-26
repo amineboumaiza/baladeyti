@@ -2,10 +2,10 @@
 <div class="container-fluid">
 <div class="d-flex align-items-center row">
      <div class="col-md-5 text-center ajout" id="ajout" >
-      <div class="form-fluid text-center" v-if="user_t=='ROLE_ADMIN'">
+      <div class="form-fluid text-center" v-if="type_admin">
       
       <h1>Créer un nouveau employé</h1> <br>
-      <form @submit.prevent="handleSubmit" method="post">
+      <form @submit.prevent="handleSubmit" method="post" >
         <div class="form-group">
           <input class="form-control" required placeholder="Nom" type="text" name="nom" id="nom" v-model.trim="AjoutFormValues.nom"><br>
         </div>
@@ -31,7 +31,7 @@
     </div>
 
     <div class="col-md-5 text-center hidden" id="modif" >
-      <div class="form-fluid text-center" v-if="user_t=='ROLE_ADMIN'">
+      <div class="form-fluid text-center">
       
       <h1>Modifier votre employé</h1> <br>
       <form @submit.prevent="handleUpdate" method="post">
@@ -63,7 +63,7 @@
     <div class="col-md-1"></div>
         <div class="col-md-5">
 
-        <div class="employes" v-if="user_t=='ROLE_ADMIN'">
+        <div class="employes" v-if="type_admin">
             <div class=" mt-3 card" v-for="employe in this.employes" :key="employe.id">
                 <div class="row">
                     <div class="col-3">
@@ -89,8 +89,8 @@
     </div>
     </div>
 
-    <div v-if="!user" class="not-logged-in">
-      You Should Log in To see <span>The Tickets</span> 
+    <div v-if="!type_admin" class="not-logged-in">
+      You Should Log in To see <span>The EMPLOYEES</span> 
     </div> 
 </div>
 </template>
@@ -212,8 +212,8 @@ export default {
         user(){
           return this.$store.state.user;
         },
-        user_t(){
-          return this.$store.state.user_t;
+        type_admin(){
+          return this.$store.state.type_admin;
         },
     }
 }

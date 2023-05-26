@@ -2,7 +2,7 @@
 <div class="container-fluid">
 <div class="d-flex align-items-center row">
      <div class="col-md-5 text-center ajout" id="ajout" >
-      <div class="form-fluid text-center" v-if="user_t=='ROLE_ADMIN'">
+      <div class="form-fluid text-center" v-if="type_admin">
       
       <h1>Créer un nouveau service</h1> <br>
       <form @submit.prevent="handleSubmit" method="post">
@@ -18,7 +18,7 @@
     </div>
 
     <div class="col-md-5 text-center hidden" id="modif" >
-      <div class="form-fluid text-center" v-if="user_t=='ROLE_ADMIN'">
+      <div class="form-fluid text-center" v-if="type_admin">
       
       <h1>Modifier votre service</h1> <br>
       <form @submit.prevent="handleUpdate" method="post">
@@ -41,7 +41,7 @@
     <div class="col-md-1"></div>
         <div class="col-md-5">
 
-        <div class="services" v-if="user_t=='ROLE_ADMIN'">
+        <div class="services" v-if="type_admin">
             <div class=" mt-3 card" v-for="service in this.services" :key="service.id">
                 <div class="row">
                     <div class="col-3 d-flex flex-column justify-content-center align-items-center">
@@ -66,7 +66,7 @@
     </div>
     </div>
 
-    <div v-if="!user" class="not-logged-in">
+    <div v-if="!type_admin" class="not-logged-in">
       You Should Log in To see <span>The Services</span> 
     </div> 
 </div>
@@ -181,8 +181,8 @@ export default {
         user(){
           return this.$store.state.user;
         },
-        user_t(){
-          return this.$store.state.user_t;
+        type_admin(){
+          return this.$store.state.type_admin;
         },
     }
 }

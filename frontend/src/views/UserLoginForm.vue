@@ -65,17 +65,16 @@ export default {
         
         this.$router.push({name : "HomePage"});
          
-        this.$store.commit('updateUser',response.data);
+
+        if (response.data.role == 'ROLE_CLIENT'){
+          this.$store.commit('updateUser',response.data); 
+        }
+           
 
          if (response.data.role == 'ROLE_ADMIN'){
-          this.$store.commit('updateUserType','ROLE_ADMIN');
-        }
-
-        else{
-          this.$store.commit('updateUserType','ROLE_CLIENT');
-        }
-
-        
+          this.$store.commit('updateTypeAdmin',response.data);
+          this.$store.commit('updateUser',null); 
+        }        
 
 
         }
@@ -89,8 +88,8 @@ export default {
       user(){
         return this.$store.state.user;
       },
-      user_t(){
-        return this.$store.state.user_t;
+      type_admin(){
+        return this.$store.state.type_admin;
       }
     }
   

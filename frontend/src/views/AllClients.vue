@@ -2,10 +2,10 @@
 <div class="container-fluid">
 <div class="d-flex align-items-center row">
 
-    <div class="col-md-1"></div>
-        <div class="col-md-5">
+    <div class="col-md-3"></div>
+        <div class="col-md-5" v-if="type_admin">
 
-        <div class="clients" v-if="user_t=='ROLE_ADMIN'">
+        <div class="clients">
             <div class=" mt-3 card" v-for="client in this.clients" :key="client.id">
                 <div class="row">
                     <div class="col-3 d-flex flex-column justify-content-center align-items-center">
@@ -18,7 +18,7 @@
                     <h6>Nom : {{client.nom}}</h6>
                     <h6>Prenom : {{client.prenom}}</h6>
                     <h6>Email : {{client.email}}</h6>
-                    <h6>Ville : {{client.adresse.ville}}</h6>
+                    
                 </div>
             </div>
             </div>
@@ -27,8 +27,8 @@
     </div>
     </div>
 
-    <div v-if="!user" class="not-logged-in">
-      You Should Log in To see <span>The Tickets</span> 
+    <div v-if="!type_admin" class="not-logged-in">
+      You Should Log in To see <span>The CLients</span> 
     </div> 
 </div>
 </template>
@@ -46,8 +46,9 @@ export default {
         getClients(){
             axios.get("http://localhost:8080/personne/client")
             .then((res) => {
+              this.clients = res.data
                console.log(res.data)
-               this.clients = res.data
+               
             }).catch((err) => {
                 console.error(err)
             });
@@ -61,8 +62,8 @@ export default {
         user(){
           return this.$store.state.user;
         },
-        user_t(){
-          return this.$store.state.user_t;
+        type_admin(){
+          return this.$store.state.type_admin;
         },
     }
 }
