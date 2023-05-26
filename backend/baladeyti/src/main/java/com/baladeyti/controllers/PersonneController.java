@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +29,9 @@ public class PersonneController {
 	
 	@Autowired
 	private PersonneRepository personneRepository;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 
 	@GetMapping("/client")
@@ -57,6 +61,7 @@ public class PersonneController {
 	public ResponseEntity<?> createEmploye(@RequestBody Personne employe){
 		try {
 		employe.setRole(ERole.ROLE_EMPLOYE);
+		employe.setPassword(passwordEncoder.encode(employe.getPassword()));
 		personneRepository.save(employe);
 		return ResponseEntity.ok().body(employe);
 		}catch(Exception e) {
