@@ -1,35 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Constant.dart';
 import 'package:mobile/Models/Ticket.dart';
+import 'package:mobile/Screen/HomePage.dart';
 import 'package:ticket_widget/ticket_widget.dart';
 
 class CurrentTicket extends StatefulWidget {
   final ticketModel ticket;
 
- 
-
-    CurrentTicket( {super.key,
-        required this.ticket,
- });
+  CurrentTicket({
+    super.key,
+    required this.ticket,
+  });
   @override
   State<CurrentTicket> createState() => _CurrentTicketState();
 }
 
 class _CurrentTicketState extends State<CurrentTicket> {
-@override
-
-
- @override
+  @override
+  @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       backgroundColor: KSecondaryColor,
+      appBar: AppBar(
+        elevation: 0.0,
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: KWihteColor),
+            onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomePage()),
+                )),
+      ),
       body: Center(
         child: TicketWidget(
           width: 350,
           height: 500,
           isCornerRounded: true,
           padding: EdgeInsets.all(20),
-          child: TicketData( ticket: widget.ticket,),
+          child: TicketData(
+            ticket: widget.ticket,
+          ),
         ),
       ),
     );
@@ -37,7 +46,7 @@ class _CurrentTicketState extends State<CurrentTicket> {
 }
 
 class TicketData extends StatelessWidget {
-    final ticketModel ticket;
+  final ticketModel ticket;
 
   const TicketData({
     Key? key,
@@ -59,7 +68,7 @@ class TicketData extends StatelessWidget {
                 borderRadius: BorderRadius.circular(30.0),
                 border: Border.all(width: 1.0, color: Colors.green),
               ),
-              child:  Center(
+              child: Center(
                 child: Text(
                   ticket.idGouvernorat.toString(),
                   style: TextStyle(color: Colors.green),
@@ -127,8 +136,7 @@ class TicketData extends StatelessWidget {
             height: 60.0,
             decoration: const BoxDecoration(
                 image: DecorationImage(
-                    image: AssetImage('assets/logo.png'),
-                    fit: BoxFit.fill)),
+                    image: AssetImage('assets/logo.png'), fit: BoxFit.fill)),
           ),
         ),
         const Padding(

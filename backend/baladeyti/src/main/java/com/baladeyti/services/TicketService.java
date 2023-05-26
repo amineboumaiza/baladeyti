@@ -83,7 +83,7 @@ public class TicketService {
 
 
 		public List<Ticket> findAllEnCours(Personne personne) {
-			return ticketRepository.findByEtatAndIdPersonne(Eetat.en_attente,personne);
+			return ticketRepository.findByEtatAndIdPersonne(Eetat.en_cours,personne);
 		}
 
 
