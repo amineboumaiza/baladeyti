@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -50,6 +51,8 @@ public class TicketsController {
 	@Autowired
 	private PersonneRepository personneRepository;
 
+	@Autowired
+	private SimpMessagingTemplate messageTemplate;
 	
 	
 	@PostMapping("/reserve")
@@ -151,28 +154,18 @@ public class TicketsController {
 	}
 	
 	@GetMapping("/{id}")
-	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> getAllTicketsByUser(@PathVariable int id){
 		
-		Optional<Personne> optionPersonne = personneRepository.findById(id);
-		if(optionPersonne.isEmpty())
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("user not found.");
+		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Personne personne  = personneRepository.findById(userDetails.getId()).get();
 		
-		Personne personne = optionPersonne.get();
+		Ticket ticket = ticketService.findById(id);
 		
-		List<Ticket> tickets = ticketService.findAllByUser(personne);
 		
-		List<TicketResponse> ticketsResponse = tickets.stream()
-				.map(ticket -> new TicketResponse(ticket.getNum(),
-									ticket.getIdMunicipalite().getNom(),
-									ticket.getIdService().getNom(),
-									ticket.getIdPersonne().getNom(),
-									ticket.getDate(),
-									ticket.getEtat()
-						)).collect(Collectors.toList());
-		
-		return ResponseEntity.ok().body(ticketsResponse);
-		
+		if(ticket == null || (ticket.getIdPersonne().getId() != personne.getId() && personne.getRole() != ERole.ROLE_ADMIN)) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id introuvable");
+		}
+		return ResponseEntity.ok().body(ticket);
 	}
 	
 	@GetMapping("/")
@@ -243,10 +236,15 @@ public class TicketsController {
 		
 		Ticket ticket = ticketService.findById(idTicket);
 		
+		
 		if(ticket.getIdPersonne().getId() != personne.getId() && personne.getRole() != ERole.ROLE_ADMIN) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id introuvable");
 		}
 		int queue = ticketService.getQueue(idTicket);
+		String msg = String.valueOf(queue);
+		messageTemplate.convertAndSend("/topic/queue", msg);
+		
+		
 		return ResponseEntity.ok().body(queue);
 		
 	}
