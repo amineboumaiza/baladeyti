@@ -89,6 +89,11 @@ public class TicketService {
 			return ticketRepository.findByEtatInAndIdPersonne(new ArrayList<Eetat>(List.of(Eetat.annulé,Eetat.traité)),personne);
 		}
 		
+		public List<Ticket> findTodayTicketsTodayEnAttenteAndEnCours(Personne personne) {
+			return ticketRepository.findTodayTicketsEnAttenteAndEnCours(personne.getId());
+		}
+		
+		
 		public void updateTicket(int idTicket) {
 			
 			List<Ticket> tickets = ticketRepository.findTicketsEnAttente(idTicket);

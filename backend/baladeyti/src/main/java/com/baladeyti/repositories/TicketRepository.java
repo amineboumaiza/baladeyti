@@ -3,6 +3,7 @@ package com.baladeyti.repositories;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -57,5 +58,11 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer>{
 			+ "AND DATE(date_reservation) = Date(NOW())",nativeQuery=true)
 	public int existsTicketEncours(@Param("idUser") int idUser,@Param("idService") int idService,@Param("idMunicipalite") int idMunicipalite);
 	
-
+	@Query(value="SELECT t FROM Ticket t WHERE t.idPersonne.id = :idPersonne "
+				+ "AND t.etat in ('en_attente','en_cours') "
+				+ "AND DATE(t.date) = DATE(NOW())")
+	public List<Ticket> findTodayTicketsEnAttenteAndEnCours(@Param("idPersonne") int idPersonne);
+	
+	
+	
 }

@@ -215,6 +215,27 @@ public class TicketsController {
 		
 	}
 	
+	@GetMapping("/today/enCours-enAttente")
+	public ResponseEntity<?> getTodayEnCoursEtEnAttente(){
+		
+		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Personne personne  = personneRepository.findById(userDetails.getId()).get();
+		
+		List<Ticket> tickets = ticketService.findTodayTicketsTodayEnAttenteAndEnCours(personne);
+		
+		return ResponseEntity.ok().body(tickets);
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	@GetMapping("/history")
 	public ResponseEntity<?> getHistoryTickets(){
 		

@@ -51,4 +51,17 @@ public class MunicipaliteController {
 	}
 	
 	
+	// find municipalite by id
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<?> getMunicipalite(@PathVariable int id){
+		
+		Municipalite municipalite = municipaliteService.findById(id);
+		
+		if(municipalite == null)
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Municipalite not found");
+		return ResponseEntity.status(HttpStatus.OK).body(municipalite);
+		
+	}
+	
 }
