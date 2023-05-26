@@ -31,6 +31,7 @@
   </div>
   
 </section>
+
 </div>
 <br>
 <br>
@@ -38,8 +39,10 @@
 
 <script>
 import axios from 'axios'
+
 export default {
     name : "AllTickets",
+   
     data(){
         return{
             tickets : [],
@@ -67,16 +70,14 @@ export default {
         type_admin(){
           return this.$store.state.type_admin;
         },
-    }
+    },
+  
 }
 
 </script>
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css?family=Oswald');
-
-
-
 
 h1 {
     text-transform: uppercase;

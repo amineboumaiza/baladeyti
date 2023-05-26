@@ -1,7 +1,7 @@
 <template>
 <div >
 <section class="container" v-if="user" >
-<h1>TOdays Tickets</h1>
+<h1>Today's Tickets</h1>
   <div class="row" >
     <article class="card fl-left" v-for="ticket in tickets" :key="ticket.id">
       <section class="date">
