@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.baladeyti.models.Eetat;
@@ -19,6 +20,9 @@ public class TicketService {
 
 	@Autowired
 	private TicketRepository ticketRepository;
+	
+	@Autowired
+	private SimpMessagingTemplate messageTemplate;
 
 
 		public Integer getMaxNumber(int idMunicipalite,int idService) {
@@ -26,6 +30,14 @@ public class TicketService {
 			Integer maxNum = ticketRepository.findMaxNum(idMunicipalite, idService);
 			
 			return maxNum;
+			
+		}
+		
+	public Integer getQueue(int idTicket) {
+			
+			int queue = ticketRepository.findQueue(idTicket) + 1;
+			
+			return queue;
 			
 		}
 		
@@ -75,6 +87,24 @@ public class TicketService {
 
 		public List<Ticket> findHistoryTickets(Personne personne) {
 			return ticketRepository.findByEtatInAndIdPersonne(new ArrayList<Eetat>(List.of(Eetat.annulé,Eetat.traité)),personne);
+		}
+		
+		public void updateTicket(int idTicket) {
+			
+			List<Ticket> tickets = ticketRepository.findTicketsEnAttente(idTicket);
+			tickets.get(0).setEtat(Eetat.en_cours);
+			ticketRepository.save(tickets.get(0));
+			for(int i=0;i < tickets.size();i++) {
+				Ticket t = tickets.get(i);
+				Personne user = t.getIdPersonne();
+				String msg = String.valueOf(i);
+				messageTemplate.convertAndSend("/topic/queue", msg);
+				
+				
+				System.out.println("ticket id: " + t.getId() + "for user :" + user.getId());
+				
+			}
+		
 		}
 	
 }

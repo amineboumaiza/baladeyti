@@ -62,6 +62,8 @@ public class WebSecurityConfig {
 		.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 		.and()
 		.authorizeHttpRequests().requestMatchers("/api/**").permitAll()
+		.and()
+		.authorizeHttpRequests().requestMatchers("/web-socket/**").permitAll()
 		.anyRequest().authenticated()
 		.and().exceptionHandling().authenticationEntryPoint(unauthorizedHandler);
 		http.authenticationProvider(authenticationProvider());

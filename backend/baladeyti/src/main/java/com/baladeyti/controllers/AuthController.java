@@ -29,12 +29,14 @@ import com.baladeyti.models.ERole;
 import com.baladeyti.models.Personne;
 import com.baladeyti.models.RefreshToken;
 import com.baladeyti.payload.requests.LoginRequest;
+import com.baladeyti.payload.requests.Message;
 import com.baladeyti.payload.requests.SignupRequest;
 import com.baladeyti.payload.responses.LoginResponse;
 import com.baladeyti.payload.responses.SignupResponse;
 import com.baladeyti.repositories.PersonneRepository;
 import com.baladeyti.services.RefreshTokenService;
 import com.baladeyti.services.UserDetailsImpl;
+import com.baladeyti.services.WebService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -59,7 +61,7 @@ public class AuthController {
 	private JwtUtils jwtUtils;
 	
 	@Autowired
-	private RefreshTokenService refreshTokenService;
+	private WebService webService;
 	
 	
 
@@ -225,42 +227,9 @@ public class AuthController {
 	}
 	
 	
-	@PreAuthorize("isAuthenticated()")
-	@GetMapping("/logout")
-	public ResponseEntity<String> logoutCookie(){
-		
-		try {
-			ResponseCookie cookie = jwtUtils.cleanJwtCookie();
-			ResponseCookie RefreshTokencookie = jwtUtils.cleanRefreshCookie();
-			return ResponseEntity.ok()
-					.header(HttpHeaders.SET_COOKIE, cookie.toString())
-					.header(HttpHeaders.SET_COOKIE, RefreshTokencookie.toString())
-					.body("logged out successfully!");
-		}catch(Exception exception) {
-			return ResponseEntity.badRequest().body("error: Could not log you out something wrong happened!");
-		}
-	}
-	
-	@GetMapping("/refreshtoken")
-	public ResponseEntity<String> refreshToken(HttpServletRequest http){
-		String refreshToken = jwtUtils.getRefreshTokenFromCookie(http);
-		if( (refreshToken !=null) && (refreshToken.length()>0) ) {
-			
-			RefreshToken refreshTokenObject = refreshTokenService.findByToken(refreshToken).get();
-			try {
-				refreshTokenObject = refreshTokenService.verifyExpiration(refreshTokenObject);
-				Personne personne  = refreshTokenObject.getPersonne();
-				ResponseCookie cookie = jwtUtils.generateJwtCookie(personne);
-				
-				return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
-			
-			}catch(TokenRefreshException exception) {
-				return ResponseEntity.badRequest().body("error: The refresh token you provided isn't correct!");
-			}
-			
-		}
-		return ResponseEntity.badRequest().body("error: the refresh token is either null or empty");
-		
+	@PostMapping("/message")
+	public void sendMessage(@RequestBody Message msg) {
+		webService.notifyFrontEnd(msg);
 	}
 	
 	

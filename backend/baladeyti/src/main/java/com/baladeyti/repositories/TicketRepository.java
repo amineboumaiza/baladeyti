@@ -8,7 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.baladeyti.models.Eetat;
+import com.baladeyti.models.Municipalite;
 import com.baladeyti.models.Personne;
+import com.baladeyti.models.Service;
 import com.baladeyti.models.Ticket;
 
 public interface TicketRepository extends JpaRepository<Ticket, Integer>{
@@ -26,5 +28,30 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer>{
 
 	public List<Ticket> findByEtatAndIdPersonne(Eetat etat,Personne personne);
 	
-	  List<Ticket> findByEtatInAndIdPersonne(Collection<Eetat> etats,Personne personne);
+	List<Ticket> findByEtatInAndIdPersonne(Collection<Eetat> etats,Personne personne);
+
+	@Query(value="SELECT * FROM Ticket t "
+			+ "WHERE Date(t.date_reservation) = Date(NOW()) "
+			+ "AND t.etat = 'en_attente' AND "
+			+ "TIME(t.date_reservation) > "
+			+ "(SELECT TIME(t2.date_reservation) FROM "
+			+ "ticket t2 WHERE t2.id_ticket = :idticket) "
+			+ "ORDER BY t.date_reservation"
+			,nativeQuery = true)
+	List<Ticket> findTicketsEnAttente(@Param("idticket") int idticket);
+	
+	
+	@Query(value="SELECT Count(*) FROM Ticket t "
+			+ "WHERE Date(t.date_reservation) = Date(NOW()) "
+			+ "AND t.etat = 'en_attente' AND "
+			+ "TIME(t.date_reservation) < "
+			+ "(SELECT TIME(t2.date_reservation) FROM "
+			+ "ticket t2 WHERE t2.id_ticket = :idTicket) "
+			,nativeQuery = true)
+	int findQueue(@Param("idTicket") int idticket);
+	
+	
+	
+	
+
 }

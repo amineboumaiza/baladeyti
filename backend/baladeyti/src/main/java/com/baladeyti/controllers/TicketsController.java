@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.baladeyti.models.ERole;
 import com.baladeyti.models.Eetat;
 import com.baladeyti.models.Municipalite;
 import com.baladeyti.models.Personne;
@@ -32,6 +33,7 @@ import com.baladeyti.services.MunicipaliteService;
 import com.baladeyti.services.ServiceService;
 import com.baladeyti.services.TicketService;
 import com.baladeyti.services.UserDetailsImpl;
+import com.baladeyti.services.WebService;
 
 
 @CrossOrigin("*")
@@ -45,9 +47,10 @@ public class TicketsController {
 	private MunicipaliteService municipaliteService;
 	@Autowired
 	private TicketService ticketService;
-	
 	@Autowired
 	private PersonneRepository personneRepository;
+
+	
 	
 	@PostMapping("/reserve")
 	public ResponseEntity<?> reserveTicket(@RequestBody TicketRequest ticketRequest){
@@ -87,7 +90,8 @@ public class TicketsController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ticket not found.");
 		ticket.setEtat(Eetat.annulé);
 		ticketService.save(ticket);
-		return ResponseEntity.status(HttpStatus.OK).body(new TicketResponse(ticket.getNum(),ticket.getIdMunicipalite().getNom(),ticket.getIdService().getNom(),ticket.getIdPersonne().getNom(),ticket.getDate(),ticket.getEtat()));
+		ticketService.updateTicket(ticket.getId());
+		return ResponseEntity.status(HttpStatus.OK).body(ticket);
 		
 	}
 	
@@ -98,12 +102,24 @@ public class TicketsController {
 		if(ticket == null)
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ticket not found.");
 		ticket.setEtat(Eetat.en_cours);
+		ticketService.save(ticket);
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new TicketResponse(ticket.getNum()
-				,ticket.getIdMunicipalite().getNom()
-				,ticket.getIdService().getNom()
-				,ticket.getIdPersonne().getNom()
-				,ticket.getDate(),ticket.getEtat()));
+				.body(ticket);
+		
+	}
+	
+	@PutMapping("/update/traite/{id}")
+	@PreAuthorize("hasRole('EMPLOYE')")
+	public ResponseEntity<?> traiteTicket(@PathVariable int id){
+		
+		Ticket ticket = ticketService.findById(id);
+		if(ticket == null)
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ticket not found.");
+		ticket.setEtat(Eetat.traité);
+		ticketService.save(ticket);
+		ticketService.updateTicket(ticket.getId());
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(ticket);
 		
 	}
 	
@@ -128,16 +144,7 @@ public class TicketsController {
 		
 		List<Ticket> tickets = ticketService.findAll();
 		
-		List<TicketResponse> ticketsResponse = tickets.stream()
-				.map(ticket -> new TicketResponse(ticket.getNum(),
-									ticket.getIdMunicipalite().getNom(),
-									ticket.getIdService().getNom(),
-									ticket.getIdPersonne().getNom(),
-									ticket.getDate(),
-									ticket.getEtat()
-						)).collect(Collectors.toList());
-		
-		return ResponseEntity.ok().body(ticketsResponse);
+		return ResponseEntity.ok().body(tickets);
 		
 	}
 	
@@ -172,17 +179,8 @@ public class TicketsController {
 		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Personne personne  = personneRepository.findById(userDetails.getId()).get();
 		List<Ticket> tickets = ticketService.findAllByUser(personne);
-		
-		List<TicketResponse> ticketsResponse = tickets.stream()
-				.map(ticket -> new TicketResponse(ticket.getNum(),
-									ticket.getIdMunicipalite().getNom(),
-									ticket.getIdService().getNom(),
-									ticket.getIdPersonne().getNom(),
-									ticket.getDate(),
-									ticket.getEtat()
-						)).collect(Collectors.toList());
-		
-		return ResponseEntity.ok().body(ticketsResponse);
+	
+		return ResponseEntity.ok().body(tickets);
 		
 	}
 	
@@ -193,15 +191,7 @@ public class TicketsController {
 		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Personne personne  = personneRepository.findById(userDetails.getId()).get();
 		List<Ticket> tickets = ticketService.findAllTodayByUser(personne);
-		List<TicketResponse> ticketsResponse = tickets.stream()
-				.map(ticket -> new TicketResponse(ticket.getNum(),
-									ticket.getIdMunicipalite().getNom(),
-									ticket.getIdService().getNom(),
-									ticket.getIdPersonne().getNom(),
-									ticket.getDate(),
-									ticket.getEtat()
-						)).collect(Collectors.toList());
-		return ResponseEntity.ok().body(ticketsResponse);
+		return ResponseEntity.ok().body(tickets);
 		
 	}
 	
@@ -212,15 +202,7 @@ public class TicketsController {
 	public ResponseEntity<?> getTodayTickets(){
 		
 		List<Ticket> tickets = ticketService.findAllToday();
-		List<TicketResponse> ticketsResponse = tickets.stream()
-				.map(ticket -> new TicketResponse(ticket.getNum(),
-									ticket.getIdMunicipalite().getNom(),
-									ticket.getIdService().getNom(),
-									ticket.getIdPersonne().getNom(),
-									ticket.getDate(),
-									ticket.getEtat()
-						)).collect(Collectors.toList());
-		return ResponseEntity.ok().body(ticketsResponse);
+		return ResponseEntity.ok().body(tickets);
 		
 	}
 	
@@ -249,6 +231,24 @@ public class TicketsController {
 		return ResponseEntity.ok().body(tickets);
 		
 	}
+	
+	@GetMapping("/queue/{idTicket}")
+	public ResponseEntity<?> queue(@PathVariable int idTicket){
+		
+		
+		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Personne personne  = personneRepository.findById(userDetails.getId()).get();
+		
+		Ticket ticket = ticketService.findById(idTicket);
+		
+		if(ticket.getIdPersonne().getId() != personne.getId() && personne.getRole() != ERole.ROLE_ADMIN) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id introuvable");
+		}
+		int queue = ticketService.getQueue(idTicket);
+		return ResponseEntity.ok().body(queue);
+		
+	}
+	
 	
 	
 	
