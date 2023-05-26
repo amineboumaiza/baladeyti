@@ -106,5 +106,12 @@ public class TicketService {
 			}
 		
 		}
+
+		public boolean existsTicketEncours(int id, int idService, int idMunicipalite) {
+			int nb = ticketRepository.existsTicketEncours(id, idService, idMunicipalite);
+			if(nb==0)
+				return false;
+			return true;
+		}
 	
 }

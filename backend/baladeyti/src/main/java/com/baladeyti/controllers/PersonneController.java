@@ -1,5 +1,6 @@
 package com.baladeyti.controllers;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +21,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.baladeyti.models.ERole;
 import com.baladeyti.models.Personne;
+import com.baladeyti.models.Service;
+import com.baladeyti.models.Travail;
+import com.baladeyti.models.TravailId;
+import com.baladeyti.payload.requests.EmployeRequest;
 import com.baladeyti.repositories.PersonneRepository;
+import com.baladeyti.repositories.TravailRepository;
+import com.baladeyti.services.ServiceService;
+
+import jakarta.transaction.Transactional;
 
 @CrossOrigin("*")
 @RestController
@@ -29,6 +38,12 @@ public class PersonneController {
 	
 	@Autowired
 	private PersonneRepository personneRepository;
+	
+	@Autowired
+	private TravailRepository travailRepository;
+	
+	@Autowired
+	ServiceService serviceService;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -58,11 +73,18 @@ public class PersonneController {
 	
 	@PostMapping("/employe/create")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<?> createEmploye(@RequestBody Personne employe){
+	@Transactional
+	public ResponseEntity<?> createEmploye(@RequestBody EmployeRequest employe){
 		try {
-		employe.setRole(ERole.ROLE_EMPLOYE);
-		employe.setPassword(passwordEncoder.encode(employe.getPassword()));
-		personneRepository.save(employe);
+		Personne personne = employe.getPersonne();
+		personne.setRole(ERole.ROLE_EMPLOYE);
+		personne.setPassword(passwordEncoder.encode(personne.getPassword()));
+		personneRepository.save(personne);
+		Service service = serviceService.findById(employe.getIdService());
+		TravailId id = new TravailId(service,personne);
+		Travail travail = new Travail(id,new Date());
+		travailRepository.save(travail);
+		
 		return ResponseEntity.ok().body(employe);
 		}catch(Exception e) {
 			e.printStackTrace();

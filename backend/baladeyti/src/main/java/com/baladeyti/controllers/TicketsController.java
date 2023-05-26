@@ -63,6 +63,8 @@ public class TicketsController {
 		Municipalite municipalite = municipaliteService.findById(idMunicipalite);
 		Service service = serviceService.findById(idService);
 		
+		if(ticketService.existsTicketEncours(userDetails.getId(),idService,idMunicipalite))
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("you already have a ticket.");
 		Integer maxNumTicket = ticketService.getMaxNumber(municipalite.getId(), service.getId());
 		if(maxNumTicket == null)
 			maxNumTicket = 1;
@@ -248,6 +250,7 @@ public class TicketsController {
 		return ResponseEntity.ok().body(queue);
 		
 	}
+
 	
 	
 	
