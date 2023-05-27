@@ -1,29 +1,97 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:mobile/Constant.dart';
 import 'package:mobile/Models/Ticket.dart';
 import 'package:mobile/Models/municipality.dart';
 import 'package:mobile/Screen/HomePage.dart';
 import 'package:mobile/Services/TicketService.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ticket_widget/ticket_widget.dart';
-
 import '../Models/Gouvernorat.dart';
 import '../Models/Services.dart';
 import '../Services/GouvernoratService.dart';
 import '../Services/MunicipalityService.dart';
 import '../Services/Service.dart';
 
-class CurrentTicket extends StatefulWidget {
+
+
+class Data {
+  StreamController<String> _dataStreamController = StreamController<String>.broadcast();
+  Stream<String> get dataStream => _dataStreamController.stream;
+
+  String _variable = '';
+
+  Future<void> fetchData(int idTick) async {
+   var url = Uri.parse('http://10.0.2.2:8080/tickets/queue/$idTick');
+     SharedPreferences prefs = await SharedPreferences.getInstance();
+   String? jwt = prefs.getString('jwt');
+
+     var auth = 'Bearer $jwt';
+
+       var headers = {'Authorization': auth};
+    print("ouiiiiiiiiiiii status code :  1");
+
+    final response = await http.get(url, headers: headers);
+    print(response.statusCode);
+
+
+    if (response.statusCode == 200) {
+      _variable = response.body;
+      _dataStreamController.add(_variable);
+    } else {
+      throw Exception('Failed to fetch data');
+    }
+  }
+
+  void dispose() {
+    _dataStreamController.close();
+  }
+}
+
+
+
+// class Data {
+//   static Future<String> fetchData(int idTick) async {
+//     SharedPreferences prefs = await SharedPreferences.getInstance();
+//     var url = Uri.parse('http://10.0.2.2:8080/tickets/queue/$idTick');
+//     String? jwt = prefs.getString('jwt');
+//     var auth = 'Bearer $jwt';
+
+//     var headers = {'Authorization': auth};
+//     print("ouiiiiiiiiiiii status code :  1");
+
+//     final response = await http.get(url, headers: headers);
+//     print(response.statusCode);
+
+//     print("ouiiiiiiiiiiii status code : 2 ");
+//     print(response.statusCode);
+//         print("ouiiiiiiiiiiii status code : 3 ");
+
+//     if (response.statusCode == 200) {
+//       String _variable = response.body;
+//       print(_variable);
+//       return _variable;
+//     } else {
+//       throw Exception('Failed to fetch data');
+//     }
+//   }
+
+
+// }
+
+class CurrentTicketStream extends StatefulWidget {
   final ticketModel ticket;
 
-  CurrentTicket({
+  CurrentTicketStream({
     super.key,
     required this.ticket,
   });
   @override
-  State<CurrentTicket> createState() => _CurrentTicketState();
+  State<CurrentTicketStream> createState() => _CurrentTicketStreamState();
 }
 
-class _CurrentTicketState extends State<CurrentTicket> {
+class _CurrentTicketStreamState extends State<CurrentTicketStream> {
   AppServices s = AppServices();
   AppGouvernorat g = AppGouvernorat();
   AppMunicipality m = AppMunicipality();
@@ -31,18 +99,44 @@ class _CurrentTicketState extends State<CurrentTicket> {
   late Future<municipalityModel> _municipalityModel;
   late Future<ServiceModel> _serviceModel;
   late Future<GouvernoratModel> _gouvernoratModel;
+  Data data = Data();
+Stream<http.Response> getRandomNumberFact(int idTick) async* {
+yield* Stream.periodic(Duration(seconds: 5), (_) async {
+     var url = Uri.parse('http://10.0.2.2:8080/tickets/queue/$idTick');
+     SharedPreferences prefs = await SharedPreferences.getInstance();
+   String? jwt = prefs.getString('jwt');
 
+     var auth = 'Bearer $jwt';
+
+       var headers = {'Authorization': auth};
+    print("ouiiiiiiiiiiii status code :  1");
+
+    //final response = await http.get(url, headers: headers);
+    //print(response.statusCode);
+
+  return http.get(url, headers: headers);
+}).asyncMap((event) async => await event);
+}
   @override
-  void initState() {
+  void initState()  {
     super.initState();
     _municipalityModel = m.getOneMunicipality(widget.ticket.idMunicipalite);
     _serviceModel = s.getOneService(widget.ticket.idService);
     _gouvernoratModel = g.getOneGouvernorat(widget.ticket.idGouvernorat);
+
+print("on initit xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+
+   data.fetchData(widget.ticket.id);
+
+ 
+   print("on initit xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+
+
   }
 
   @override
   Widget build(BuildContext context) {
-     Future ComfirmerAnuuler() {
+    Future ComfirmerAnuuler() {
       return showDialog<void>(
         context: context,
         barrierDismissible: false, // user must tap button!
@@ -65,8 +159,8 @@ class _CurrentTicketState extends State<CurrentTicket> {
               TextButton(
                 child: const Text('Anuuler Ticket'),
                 onPressed: () async {
-                 // await AuthService().logout();
-                                               serviceTickets.CancelTicket(widget.ticket.id);
+                  // await AuthService().logout();
+                  serviceTickets.CancelTicket(widget.ticket.id);
 
                   Navigator.pushAndRemoveUntil(
                       context,
@@ -80,6 +174,7 @@ class _CurrentTicketState extends State<CurrentTicket> {
         },
       );
     }
+
     return Scaffold(
       backgroundColor: KWihteColor,
       appBar: AppBar(
@@ -136,7 +231,44 @@ class _CurrentTicketState extends State<CurrentTicket> {
                     ],
                   )
                 ],
-              ),
+              ), 
+              Center(
+          child: StreamBuilder<String>(
+            stream:  data.dataStream,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                
+                return Column(
+                  children: [
+                    Row(
+                      children: [
+                        Text("Position :"),
+                                            Text(snapshot.data!),
+
+                      ],
+                    ),
+                  ],
+                ); // Display the data in a text widget
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                print(snapshot);
+                return Column(
+                  children: [
+                    
+                    Text("xxxxxxxxxxx2xxxxxxxxxxxxxxxxxxx"),
+                    
+                  ],
+                );
+                
+              }
+            },
+          ),),StreamBuilder<http.Response>(
+  stream: getRandomNumberFact(78),
+  builder: (context, snapshot) => snapshot.hasData
+      ? Center(child: Text(snapshot.data!.body))
+      : CircularProgressIndicator(),
+),
               FutureBuilder<ServiceModel>(
                   future: _serviceModel,
                   builder: (context, snapshot) {
@@ -221,10 +353,10 @@ class _CurrentTicketState extends State<CurrentTicket> {
                     return Text('out of  ');
                   }),
               SizedBox(height: 10),
-               Center(
+              Center(
                 child: widget.ticket.etat != 'en_attente'
-                    ?  Container()
-                    :  Align(
+                    ? Container()
+                    : Align(
                         alignment: Alignment.center,
                         child: TextButton.icon(
                             style: ButtonStyle(
@@ -245,10 +377,10 @@ class _CurrentTicketState extends State<CurrentTicket> {
               SizedBox(height: 10),
               Padding(
                 padding:
-                    const EdgeInsets.only(top: 0.0, left: 35.0, right: 20.0),
+                    const EdgeInsets.only(top: 0.0, left: 60.0, right: 20.0),
                 child: Container(
-                  width: 230.0,
-                  height: 70.0,
+                  width: 100.0,
+                  height: 20.0,
                   decoration: const BoxDecoration(
                       image: DecorationImage(
                           image: AssetImage('assets/logo.png'),
@@ -290,3 +422,32 @@ Widget ticketDetailsWidget(String firstTitle, String firstDesc) {
   );
 }
 
+
+class PeriodicRequester extends StatelessWidget {
+Stream<http.Response> getRandomNumberFact(int idTick) async* {
+yield* Stream.periodic(Duration(seconds: 5), (_) async {
+     var url = Uri.parse('http://10.0.2.2:8080/tickets/queue/$idTick');
+     SharedPreferences prefs = await SharedPreferences.getInstance();
+   String? jwt = prefs.getString('jwt');
+
+     var auth = 'Bearer $jwt';
+
+       var headers = {'Authorization': auth};
+    print("ouiiiiiiiiiiii status code :  1");
+
+    //final response = await http.get(url, headers: headers);
+    //print(response.statusCode);
+
+  return http.get(url, headers: headers);
+}).asyncMap((event) async => await event);
+}
+@override
+Widget build(BuildContext context) {
+return StreamBuilder<http.Response>(
+  stream: getRandomNumberFact(78),
+  builder: (context, snapshot) => snapshot.hasData
+      ? Center(child: Text(snapshot.data!.body))
+      : CircularProgressIndicator(),
+);
+}
+}

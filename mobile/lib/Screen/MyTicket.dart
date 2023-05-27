@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Screen/CureentTicket.dart';
+import 'package:mobile/Screen/CureentTicketStream.dart';
 import 'package:mobile/Screen/HistoryTicket.dart';
 import 'package:mobile/Services/TicketService.dart';
 import 'package:ticket_material/ticket_material.dart';
@@ -265,7 +266,7 @@ class _MyHomeState extends State<MyHome> {
                                                                   MaterialPageRoute(
                                                                       builder:
                                                                           (context) =>
-                                                                              CurrentTicket(
+                                                                              CurrentTicketStream(
                                                                                 ticket: lm[index],
                                                                               )),
                                                                 )
