@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Constant.dart';
 import 'package:mobile/Models/Ticket.dart';
+import 'package:mobile/Models/municipality.dart';
 import 'package:mobile/Screen/HomePage.dart';
 import 'package:ticket_widget/ticket_widget.dart';
+
+import '../Models/Gouvernorat.dart';
+import '../Models/Services.dart';
+import '../Services/GouvernoratService.dart';
+import '../Services/MunicipalityService.dart';
+import '../Services/Service.dart';
 
 class CurrentTicket extends StatefulWidget {
   final ticketModel ticket;
@@ -16,188 +23,209 @@ class CurrentTicket extends StatefulWidget {
 }
 
 class _CurrentTicketState extends State<CurrentTicket> {
+  AppServices s = AppServices();
+  AppGouvernorat g = AppGouvernorat();
+  AppMunicipality m = AppMunicipality();
+
+  late Future<municipalityModel> _municipalityModel;
+  late Future<ServiceModel> _serviceModel;
+  late Future<GouvernoratModel> _gouvernoratModel;
+
   @override
+  void initState() {
+    super.initState();
+    _municipalityModel = m.getOneMunicipality(widget.ticket.idMunicipalite);
+    _serviceModel = s.getOneService(widget.ticket.idService);
+    _gouvernoratModel = g.getOneGouvernorat(widget.ticket.idGouvernorat);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: KSecondaryColor,
-      appBar: AppBar(
-        elevation: 0.0,
-        leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: KWihteColor),
-            onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomePage()),
-                )),
+      backgroundColor: KWihteColor,
+      appBar:       AppBar(
+        elevation:  0 ,
+         iconTheme: IconThemeData(
+    color: Colors.black, //change your color here
+  ),
+        backgroundColor: KWihteColor,
+        // title: Text("Historique",
+        // style: TextStyle(color: KBlackColor)),
       ),
       body: Center(
         child: TicketWidget(
+             color : KGreyColor,
+
           width: 350,
-          height: 500,
+          height: 480,
           isCornerRounded: true,
           padding: EdgeInsets.all(20),
-          child: TicketData(
-            ticket: widget.ticket,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class TicketData extends StatelessWidget {
-  final ticketModel ticket;
-
-  const TicketData({
-    Key? key,
-    required this.ticket,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              width: 120.0,
-              height: 25.0,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30.0),
-                border: Border.all(width: 1.0, color: Colors.green),
-              ),
-              child: Center(
-                child: Text(
-                  ticket.idGouvernorat.toString(),
-                  style: TextStyle(color: Colors.green),
-                ),
-              ),
-            ),
-            Row(
-              children: const [
-                Text(
-                  'LHR',
-                  style: TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.bold),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 8.0),
-                  child: Icon(
-                    Icons.flight_takeoff,
-                    color: Colors.pink,
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 8.0),
-                  child: Text(
-                    'ISL',
-                    style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
-                  ),
-                )
-              ],
-            )
-          ],
-        ),
-        const Padding(
-          padding: EdgeInsets.only(top: 20.0),
-          child: Text(
-            'Flight Ticket',
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 25.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ticketDetailsWidget(
-                  'Passengers', 'Hafiz M Mujahid', 'Date', '28-08-2022'),
-              Padding(
-                padding: const EdgeInsets.only(top: 12.0, right: 52.0),
-                child: ticketDetailsWidget('Flight', '76836A45', 'Gate', '66B'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: 120.0,
+                    height: 25.0,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30.0),
+                      border: Border.all(width: 1.0, color: Colors.green),
+                    ),
+                    child: Center(
+                      child: Text(
+                        widget.ticket.num.toString(),
+                        style: TextStyle(color: Colors.green),
+                      ),
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      Text(
+                        "Date :" + widget.ticket.date.substring(0, 10),
+                        style: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.bold),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 8.0),
+                        child: Text(
+                          'Etat: ' + widget.ticket.etat,
+                          style: TextStyle(
+                              color: Colors.black, fontWeight: FontWeight.bold),
+                        ),
+                      )
+                    ],
+                  )
+                ],
               ),
+              FutureBuilder<ServiceModel>(
+                  future: _serviceModel,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      final service = snapshot.data!;
+                      return Padding(
+                        padding: EdgeInsets.only(top: 20.0),
+                        child: Text(
+                          '${service.name}',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      );
+                    }
+                    return Text('out of  ');
+                  }),
+              FutureBuilder<municipalityModel>(
+                  future: _municipalityModel,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      final muni = snapshot.data!;
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 25.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Municipalité',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10.0),
+                              child: ticketDetailsWidget('Nom', '${muni.name}'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10.0),
+                              child:
+                                  ticketDetailsWidget('Adresse', '${muni.rue}'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10.0),
+                              child: ticketDetailsWidget(
+                                  'Code Postale', '${muni.codePostale}'),
+                            ),
+                            SizedBox(height: 30)
+                          ],
+                        ),
+                      );
+                    }
+                    return Text('out of  ');
+                  }),
+              FutureBuilder<GouvernoratModel>(
+                  future: _gouvernoratModel,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      final gauv = snapshot.data!;
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 0.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Gouvernorat',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10.0),
+                              child: ticketDetailsWidget('Nom', '${gauv.name}'),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                    return Text('out of  ');
+                  }),
+              SizedBox(height: 10),
               Padding(
-                padding: const EdgeInsets.only(top: 12.0, right: 53.0),
-                child: ticketDetailsWidget('Class', 'Business', 'Seat', '21B'),
+                padding:
+                    const EdgeInsets.only(top: 0.0, left: 20.0, right: 20.0),
+                child: Container(
+                  width: 250.0,
+                  height: 80.0,
+                  decoration: const BoxDecoration(
+                      image: DecorationImage(
+                          image: AssetImage('assets/logo.png'),
+                          fit: BoxFit.fill)),
+                ),
               ),
             ],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: 80.0, left: 30.0, right: 30.0),
-          child: Container(
-            width: 250.0,
-            height: 60.0,
-            decoration: const BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage('assets/logo.png'), fit: BoxFit.fill)),
-          ),
-        ),
-        const Padding(
-          padding: EdgeInsets.only(top: 10.0, left: 75.0, right: 75.0),
-          child: Text(
-            '0000 +9230 2884 5163',
-            style: TextStyle(
-              color: Colors.black,
-            ),
-          ),
-        ),
-        const SizedBox(height: 30),
-        const Text('         Developer: instagram.com/DholaSain')
-      ],
+      ),
     );
   }
 }
 
-Widget ticketDetailsWidget(String firstTitle, String firstDesc,
-    String secondTitle, String secondDesc) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+Widget ticketDetailsWidget(String firstTitle, String firstDesc) {
+  return Column(
     children: [
-      Padding(
-        padding: const EdgeInsets.only(left: 12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              firstTitle,
-              style: const TextStyle(color: Colors.grey),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 4.0),
-              child: Text(
-                firstDesc,
-                style: const TextStyle(color: Colors.black),
-              ),
-            )
-          ],
+      Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          firstTitle + " ",
+          textAlign: TextAlign.left,
+          style: const TextStyle(color: KSecondaryColor),
         ),
       ),
-      Padding(
-        padding: const EdgeInsets.only(right: 20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              secondTitle,
-              style: const TextStyle(color: Colors.grey),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 4.0),
-              child: Text(
-                secondDesc,
-                style: const TextStyle(color: Colors.black),
-              ),
-            )
-          ],
+      Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          firstDesc,
+          textAlign: TextAlign.left,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(color: Colors.black),
         ),
-      )
+      ),
+      SizedBox(
+        height: 5,
+      ),
     ],
   );
 }

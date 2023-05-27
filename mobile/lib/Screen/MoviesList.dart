@@ -24,28 +24,29 @@ class _MoviesListState extends State<MoviesList> {
   AppGouvernorat g = AppGouvernorat();
   AppMunicipality m = AppMunicipality();
   AppTicket _ticketService = AppTicket();
-  submitReserve(int idService, int idMuni, BuildContext theContext) async  {
-    if (idService >0 && idMuni>0) {
-       ticketModel?  T =  await _ticketService.ReseveTicket(idService, idMuni);
-      if ( T != null) {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) =>  CurrentTicket( ticket: T,)),
-            (route) => false);
+  submitReserve(int idService, int idMuni, BuildContext theContext) async {
+    if (idService > 0 && idMuni > 0) {
+      ticketModel? T = await _ticketService.ReseveTicket(idService, idMuni);
+      if (T != null) {
+        
+                            Navigator.push(
+                             context,
+                             MaterialPageRoute(builder: (context) => CurrentTicket(ticket: T,))
+                           );
       } else {
         //toastMsg("Mot de passe incorrect !", theContext);
       }
     }
   }
+
   @override
   void initState() {
     super.initState();
-
   }
 
   int _value = 0;
   int _valueg = 1;
-  int _valuem = 0 ; 
+  int _valuem = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +75,7 @@ class _MoviesListState extends State<MoviesList> {
             ),
           ),
           FutureBuilder<Object>(
-              future: g.getAllservices(),
+              future: g.getAllGouvernorat(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<GouvernoratModel> g =
@@ -131,7 +132,8 @@ class _MoviesListState extends State<MoviesList> {
                         isDense: true,
                         borderRadius: BorderRadius.circular(9),
                         value: (_valuem == 0) ? null : _valuem,
-                        items: m.map<DropdownMenuItem>((municipalityModel muni) {
+                        items:
+                            m.map<DropdownMenuItem>((municipalityModel muni) {
                           return DropdownMenuItem(
                             value: muni.id,
                             child: Text(muni.name),
@@ -150,6 +152,12 @@ class _MoviesListState extends State<MoviesList> {
                   );
                 }
                 return Text("Choisir");
+              }),
+          FutureBuilder<Object>(
+              future: s.getOneService(1),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {}
+                return Container();
               }),
           FutureBuilder<Object>(
               future: s.getAllservices(),
@@ -189,15 +197,15 @@ class _MoviesListState extends State<MoviesList> {
                 }
                 return Text("out of the futyure");
               }),
-                          RoundedButton(
-                text: 'Reservez votre Ticket',
-                color: KPrimaryColor,
-                textColor: KWihteColor,
-                onPressed: () {
-                //  _login();
-                 submitReserve(_value, _valuem, context);
-                },
-              ),
+          RoundedButton(
+            text: 'Reservez votre Ticket',
+            color: KPrimaryColor,
+            textColor: KWihteColor,
+            onPressed: () {
+              //  _login();
+              submitReserve(_value, _valuem, context);
+            },
+          ),
         ]),
       ),
     );

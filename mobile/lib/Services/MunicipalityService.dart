@@ -40,4 +40,27 @@ class AppMunicipality {
       throw Exception();
     }
   }
+  Future<municipalityModel> getOneMunicipality(int id) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var url = Uri.parse('http://10.0.2.2:8080/municipalite/$id');
+    String? jwt = prefs.getString('jwt');
+    var auth = 'Bearer $jwt';
+    var headers = {'Authorization': auth};
+    final response = await http.get(url, headers: headers);
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      municipalityModel OneMunicipality;
+      Map<String, dynamic> res = json.decode(response.body) as Map<String, dynamic>;
+      OneMunicipality = municipalityModel.fromMap(res);
+            print("Resss");
+
+      print(res);
+      print("one Municipality");
+      print(OneMunicipality.name);
+      return OneMunicipality;
+    } else {
+      print("Probleme ! Service non existant");
+      throw Exception();
+    }
+}
 }

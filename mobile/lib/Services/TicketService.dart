@@ -40,9 +40,9 @@ class AppTicket {
       throw Exception();
     }
   }
-    Future<List<ticketModel>> getAllTicketEncours(int id) async {
+    Future<List<ticketModel>> getAllTicketHistory() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    var url = Uri.parse('http://10.0.2.2:8080/tickets/enCours');
+    var url = Uri.parse('http://10.0.2.2:8080/tickets/history');
     String? jwt = prefs.getString('jwt');
     var auth = 'Bearer $jwt';
     print('jwt ');
@@ -65,6 +65,33 @@ class AppTicket {
       print(LMuni.length);
       LMuni.forEach((ticketModel s) {
         print(s);
+      });
+      return LMuni;
+    } else {
+      print("noon get user info");
+      throw Exception();
+    }
+  }
+
+     Future<List<ticketModel>> getAllTicketEncoursEnAttente() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var url = Uri.parse('http://10.0.2.2:8080/tickets/today/enCours-enAttente');
+    String? jwt = prefs.getString('jwt');
+    var auth = 'Bearer $jwt';
+
+
+    var headers = {'Authorization': auth};
+
+    final response = await http.get(url, headers: headers);
+
+    if (response.statusCode == 200) {
+print("IS caleed");
+      final res = jsonDecode(response.body);
+      List<ticketModel> LMuni = res.map<ticketModel>((json) {
+        return ticketModel.fromMap(json);
+      }).toList();
+      LMuni.forEach((ticketModel s) {
+        print(s.etat);
       });
       return LMuni;
     } else {
