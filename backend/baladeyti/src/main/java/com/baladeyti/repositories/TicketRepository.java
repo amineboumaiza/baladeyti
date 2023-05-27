@@ -44,12 +44,14 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer>{
 	
 	@Query(value="SELECT Count(*) FROM Ticket t "
 			+ "WHERE Date(t.date_reservation) = Date(NOW()) "
-			+ "AND t.etat = 'en_attente' AND "
-			+ "TIME(t.date_reservation) < "
+			+ "AND t.etat = 'en_attente' "
+			+ "AND t.id_service = :idService "
+			+ "AND t.id_municipalite = :idMunicipalite "
+			+ "AND TIME(t.date_reservation) < "
 			+ "(SELECT TIME(t2.date_reservation) FROM "
 			+ "ticket t2 WHERE t2.id_ticket = :idTicket) "
 			,nativeQuery = true)
-	int findQueue(@Param("idTicket") int idticket);
+	int findQueue(@Param("idTicket") int idticket,@Param("idService") int idService,@Param("idMunicipalite") int idMunicipalite);
 	
 	@Query(value="SELECT COUNT(*) FROM ticket WHERE id_service = :idService "
 			+ "AND id_municipalite = :idMunicipalite "

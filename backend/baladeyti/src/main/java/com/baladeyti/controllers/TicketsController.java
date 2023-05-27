@@ -28,6 +28,7 @@ import com.baladeyti.models.Personne;
 import com.baladeyti.models.Service;
 import com.baladeyti.models.Ticket;
 import com.baladeyti.payload.requests.TicketRequest;
+import com.baladeyti.payload.responses.Queue;
 import com.baladeyti.payload.responses.TicketResponse;
 import com.baladeyti.repositories.PersonneRepository;
 import com.baladeyti.services.MunicipaliteService;
@@ -268,10 +269,19 @@ public class TicketsController {
 		if(ticket.getIdPersonne().getId() != personne.getId() && personne.getRole() != ERole.ROLE_ADMIN) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id introuvable");
 		}
-		int queue = ticketService.getQueue(idTicket);
-		String msg = String.valueOf(queue);
-		messageTemplate.convertAndSend("/topic/queue", msg);
-		
+		int queue;
+		if (ticket.getEtat() == Eetat.en_cours) {
+			queue = 0;
+			Queue q = new Queue(ticket.getId(),queue);
+			messageTemplate.convertAndSend("/topic/queue", q);
+
+		}else if(ticket.getEtat() == Eetat.en_attente) {
+			queue = ticketService.getQueue(idTicket,ticket.getIdService().getId(),ticket.getIdMunicipalite().getId());
+			Queue q = new Queue(ticket.getId(),queue);
+			messageTemplate.convertAndSend("/topic/queue", q);
+		}else {
+			queue = -1;
+		}
 		
 		return ResponseEntity.ok().body(queue);
 		

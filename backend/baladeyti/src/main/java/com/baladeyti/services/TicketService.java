@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.baladeyti.models.Eetat;
 import com.baladeyti.models.Personne;
 import com.baladeyti.models.Ticket;
+import com.baladeyti.payload.responses.Queue;
 import com.baladeyti.repositories.TicketRepository;
 
 @Service
@@ -33,9 +34,10 @@ public class TicketService {
 			
 		}
 		
-	public Integer getQueue(int idTicket) {
+	public Integer getQueue(int idTicket,int idService,int idMunicipalite) {
 			
-			int queue = ticketRepository.findQueue(idTicket) + 1;
+		
+			int queue = ticketRepository.findQueue(idTicket,idService,idMunicipalite) + 1;
 			
 			return queue;
 			
@@ -104,8 +106,8 @@ public class TicketService {
 			for(int i=0;i < tickets.size();i++) {
 				Ticket t = tickets.get(i);
 				Personne user = t.getIdPersonne();
-				String msg = String.valueOf(i);
-				messageTemplate.convertAndSend("/topic/queue", msg);
+				Queue queue = new Queue(t.getId(),i);
+				messageTemplate.convertAndSend("/topic/queue", queue);
 				
 				
 				System.out.println("ticket id: " + t.getId() + "for user :" + user.getId());
@@ -123,8 +125,8 @@ public void updateAnnuleTicket(int idTicket) {
 			for(int i=0;i < tickets.size();i++) {
 				Ticket t = tickets.get(i);
 				Personne user = t.getIdPersonne();
-				String msg = String.valueOf(i);
-				messageTemplate.convertAndSend("/topic/queue", msg);
+				Queue queue = new Queue(t.getId(),i);
+				messageTemplate.convertAndSend("/topic/queue", queue);
 				
 				
 				System.out.println("ticket id: " + t.getId() + "for user :" + user.getId());
