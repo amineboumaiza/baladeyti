@@ -94,9 +94,11 @@ public class TicketService {
 		}
 		
 		
-		public void updateTicket(int idTicket) {
+		public void updateTraiteTicket(int idTicket) {
 			
 			List<Ticket> tickets = ticketRepository.findTicketsEnAttente(idTicket);
+			if(tickets.size() == 0)
+				return;
 			tickets.get(0).setEtat(Eetat.en_cours);
 			ticketRepository.save(tickets.get(0));
 			for(int i=0;i < tickets.size();i++) {
@@ -111,6 +113,29 @@ public class TicketService {
 			}
 		
 		}
+		
+		
+public void updateAnnuleTicket(int idTicket) {
+			
+			List<Ticket> tickets = ticketRepository.findTicketsEnAttente(idTicket);
+			if(tickets.size() == 0)
+				return;
+			for(int i=0;i < tickets.size();i++) {
+				Ticket t = tickets.get(i);
+				Personne user = t.getIdPersonne();
+				String msg = String.valueOf(i);
+				messageTemplate.convertAndSend("/topic/queue", msg);
+				
+				
+				System.out.println("ticket id: " + t.getId() + "for user :" + user.getId());
+				
+			}
+		
+		}
+		
+		
+		
+		
 
 		public boolean existsTicketEncours(int id, int idService, int idMunicipalite) {
 			int nb = ticketRepository.existsTicketEncours(id, idService, idMunicipalite);

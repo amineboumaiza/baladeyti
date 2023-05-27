@@ -91,11 +91,18 @@ public class TicketsController {
 	public ResponseEntity<?> annulerTicket(@PathVariable int id){
 		
 		Ticket ticket = ticketService.findById(id);
-		if(ticket == null)
+		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Personne personne  = personneRepository.findById(userDetails.getId()).get();
+		
+		if(ticket == null || (personne.getRole() == ERole.ROLE_CLIENT && ticket.getIdPersonne().getId() != personne.getId() ))
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ticket not found.");
+		Eetat ancienneEtat = ticket.getEtat();
 		ticket.setEtat(Eetat.annulé);
 		ticketService.save(ticket);
-		ticketService.updateTicket(ticket.getId());
+		if(ancienneEtat == Eetat.en_cours)
+			ticketService.updateTraiteTicket(ticket.getId());
+		else
+			ticketService.updateAnnuleTicket(ticket.getId());
 		return ResponseEntity.status(HttpStatus.OK).body(ticket);
 		
 	}
@@ -122,7 +129,7 @@ public class TicketsController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ticket not found.");
 		ticket.setEtat(Eetat.traité);
 		ticketService.save(ticket);
-		ticketService.updateTicket(ticket.getId());
+		ticketService.updateTraiteTicket(ticket.getId());
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(ticket);
 		
