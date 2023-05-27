@@ -7,20 +7,30 @@
       <h1>Créer un nouveau employé</h1> <br>
       <form @submit.prevent="handleSubmit" method="post" >
         <div class="form-group">
-          <input class="form-control" required placeholder="Nom" type="text" name="nom" id="nom" v-model.trim="AjoutFormValues.nom"><br>
+          <input class="form-control" required placeholder="Nom" type="text" name="nom" id="nom" v-model.trim="AjoutFormValues.personne.nom"><br>
         </div>
         
         <div class="form-group">
-          <input class="form-control" required placeholder="Prenom" type="text" name="prenom" id="prenom" v-model.trim="AjoutFormValues.prenom"><br>
+          <input class="form-control" required placeholder="Prenom" type="text" name="prenom" id="prenom" v-model.trim="AjoutFormValues.personne.prenom"><br>
         </div>
 
 
         <div class="form-group">
-          <input class="form-control" required placeholder="Email" type="email" name="email" id="email" v-model.trim="AjoutFormValues.email"><br>
+          <input class="form-control" required placeholder="Email" type="email" name="email" id="email" v-model.trim="AjoutFormValues.personne.email"><br>
         </div>
 
         <div class="form-group">
-          <input class="form-control" required placeholder="Password" type="password" name="password" id="password" v-model.trim="AjoutFormValues.password"><br>
+          <input class="form-control" required placeholder="Password" type="password" name="password" id="password" v-model.trim="AjoutFormValues.personne.password"><br>
+        </div>
+
+        <div class="form-group">
+          <select class="form-control" 
+         v-model="selectedService" @change="logging">
+          <option value="">Choisir un service</option>
+          <option v-for="service in this.services" :value="service.id " :key="service.id ">
+            {{ service.nom }}
+          </option>
+        </select><br>
         </div>
 
         <ErrorMsg v-if="AjoutFormValues.error" :error="AjoutFormValues.error"/>
@@ -103,12 +113,18 @@ export default {
     data(){
         return{
             employes : [],
+            services : [],
+            selectedService:'',
+           
             AjoutFormValues: {
-                nom: "",
-                prenom:"",
-                email: "",
-                password : "",
+                personne :{
+                  nom: "",
+                  prenom:"",
+                  email: "",
+                  password : "",
+                },
                 error:"",
+                idService :0,
             },
 
             ModifFormValues: {
@@ -155,21 +171,24 @@ export default {
         },
 
         async handleSubmit() {
+        
+        this.AjoutFormValues.idService = this.selectedService;
 
-              const response = await axios.post("http://localhost:8080/personne/employe/create", this.AjoutFormValues);
-            
-              if (response.status != 200){
-                this.AjoutFormValues.error = "Invalid Informations.";
-              }
+        const response = await axios.post("http://localhost:8080/personne/employe/create", this.AjoutFormValues);
+      
+        if (response.status != 200){
+          this.AjoutFormValues.error = "Invalid Informations.";
+        }
 
-              else{
-                 this.getEmployes()
-              }
+        else{
+          this.getEmployes()
+        }
 
-              this.AjoutFormValues.nom ="";
-              this.AjoutFormValues.prenom ="";
-              this.AjoutFormValues.email ="";
-              this.AjoutFormValues.password ="";
+        this.AjoutFormValues.personne.nom ="";
+        this.AjoutFormValues.personne.prenom ="";
+        this.AjoutFormValues.personne.email ="";
+        this.AjoutFormValues.personne.password ="";
+        this.AjoutFormValues.idService ="";
 
            
         },
@@ -202,10 +221,24 @@ export default {
             ModifDiv.classList.add("hidden");
 
         },
+
+         async getServices() {
+      
+      try {
+        const response = await axios.get("http://localhost:8080/service/all");
+
+        this.services = response.data;
+
+        }
+        catch(e){
+          console.log(e);
+        }
+    },
     } ,
     components: { ErrorMsg },
     mounted (){
-         this.getEmployes()
+         this.getEmployes();
+         this.getServices();
     },
 
     computed:{

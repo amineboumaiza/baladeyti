@@ -66,16 +66,27 @@ export default {
         this.$router.push({name : "HomePage"});
          
 
-        if (response.data.role == 'ROLE_CLIENT'){
-          this.$store.commit('updateUser',response.data); 
-        }
-           
+        this.$store.commit('updateUser',response.data); 
+        
 
-         if (response.data.role == 'ROLE_ADMIN'){
+        if (response.data.role == 'ROLE_ADMIN'){
           this.$store.commit('updateTypeAdmin',response.data);
-          this.$store.commit('updateUser',null); 
-        }        
-
+          this.$store.commit('updateTypeEmp',null);
+          this.$store.commit('updateTypeClient',null);
+          
+        }  
+        
+         else if (response.data.role == 'ROLE_EMPLOYE'){
+          this.$store.commit('updateTypeEmp',response.data);
+          this.$store.commit('updateTypeAdmin',null);
+          this.$store.commit('updateTypeClient',null);
+        } 
+        
+         else if (response.data.role == 'ROLE_CLIENT'){
+          this.$store.commit('updateTypeClient',response.data);
+          this.$store.commit('updateTypeAdmin',null);
+          this.$store.commit('updateTypeEmp',null);
+        } 
 
         }
         catch(e){
@@ -90,7 +101,14 @@ export default {
       },
       type_admin(){
         return this.$store.state.type_admin;
-      }
+      },
+      type_emp(){
+        return this.$store.state.type_emp;
+      },
+      type_client(){
+        return this.$store.state.type_client;
+      },
+      
     }
   
 }

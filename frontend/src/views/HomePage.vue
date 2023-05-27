@@ -7,15 +7,13 @@
         </div>
 
         <div>
-            <router-link to="/addTicket" v-if="!type_admin">
+            <router-link to="/addTicket" v-if="!user || type_client">
                 <button class="btn reserver">Reserver maintenant</button>
             </router-link>
         </div>
         
     </div>
 
-    
- 
 </template>
 
 <script>
@@ -28,9 +26,21 @@ export default {
   },
 
     computed : {
+       user(){
+        return this.$store.state.user;
+      },
+
       type_admin(){
         return this.$store.state.type_admin;
-        },
+      },
+
+      type_emp(){
+        return this.$store.state.type_emp;
+      },
+
+      type_client(){
+        return this.$store.state.type_client;
+      },
       },
        mounted() {
        if(!window.location.hash) {

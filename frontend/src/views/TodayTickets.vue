@@ -10,18 +10,18 @@
         </time>
       </section>
       <section class="card-cont">
-        <h3>{{ticket.numTicket}}</h3>
+        <h3>{{ticket.num}}</h3>
         <div class="even-date">
          <i class="fa fa-calendar"></i>
          <time>
-           <span>{{ticket.nomPersonne}}</span>
-           <span>{{ticket.nomMunicipalite}}</span>
+           <span>{{ticket.idPersonne.nom}} {{ticket.idPersonne.prenom}}</span>
+           <span>{{ticket.idMunicipalite.nom}}</span>
          </time>
         </div>
         <div class="even-info">
           <i class="fa fa-map-marker"></i>
           <p>
-            {{ticket.nomService}}
+            {{ticket.idService.nom}}
           </p>
         </div>
         <a href="#">{{ticket.etat}}</a>
