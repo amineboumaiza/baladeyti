@@ -19,6 +19,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer{
 		
 		registry.enableSimpleBroker("/topic");
 		registry.setApplicationDestinationPrefixes("/ws");
+		registry.setUserDestinationPrefix("/user");
 		
 	}
 	
@@ -26,7 +27,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer{
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
 		
-		registry.addEndpoint("/web-socket").setAllowedOriginPatterns("*").setHandshakeHandler(new UserHandShakeHandler()).withSockJS();
+		registry.addEndpoint("/web-socket").setAllowedOriginPatterns("*").withSockJS();
 		
 	}
 }

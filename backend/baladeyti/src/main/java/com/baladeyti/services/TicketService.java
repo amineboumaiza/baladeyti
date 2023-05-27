@@ -107,7 +107,7 @@ public class TicketService {
 				Ticket t = tickets.get(i);
 				Personne user = t.getIdPersonne();
 				Queue queue = new Queue(t.getId(),i);
-				messageTemplate.convertAndSendToUser(t.getIdPersonne().getEmail(),"/topic/queue", queue);
+				messageTemplate.convertAndSend("/topic/queue/user/" + Integer.toString(user.getId()), queue);
 				
 				
 				System.out.println("ticket id: " + t.getId() + "for user :" + user.getId());
@@ -137,7 +137,10 @@ public void updateAnnuleTicket(int idTicket) {
 		
 		
 		
-		
+		public Ticket findTicketEnCoursByEmploye(int idService) {
+			return ticketRepository.findTicketEnCoursByEmploye(idService);
+		}
+
 
 		public boolean existsTicketEncours(int id, int idService, int idMunicipalite) {
 			int nb = ticketRepository.existsTicketEncours(id, idService, idMunicipalite);

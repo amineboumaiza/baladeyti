@@ -27,10 +27,12 @@ import com.baladeyti.models.Municipalite;
 import com.baladeyti.models.Personne;
 import com.baladeyti.models.Service;
 import com.baladeyti.models.Ticket;
+import com.baladeyti.models.Travail;
 import com.baladeyti.payload.requests.TicketRequest;
 import com.baladeyti.payload.responses.Queue;
 import com.baladeyti.payload.responses.TicketResponse;
 import com.baladeyti.repositories.PersonneRepository;
+import com.baladeyti.repositories.TravailRepository;
 import com.baladeyti.services.MunicipaliteService;
 import com.baladeyti.services.ServiceService;
 import com.baladeyti.services.TicketService;
@@ -54,6 +56,9 @@ public class TicketsController {
 
 	@Autowired
 	private SimpMessagingTemplate messageTemplate;
+	
+	@Autowired
+	private TravailRepository travailRepository;
 	
 	
 	@PostMapping("/reserve")
@@ -288,7 +293,22 @@ public class TicketsController {
 	}
 
 	// traja3lek el ticket en cours lel employe eli chedid el service heka fel muuniciaplite heki
-	
+	@GetMapping("/employe/enCours")
+	@PreAuthorize("hasRole('EMPLOYE')")
+	public ResponseEntity<?> getTicketEnCoursByEmploye(){
+		
+		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Personne personne  = personneRepository.findById(userDetails.getId()).get();
+		Travail travail = travailRepository.findByEmploye(personne.getId());
+		System.out.println(travail);
+		Ticket ticket = ticketService.findTicketEnCoursByEmploye(travail.getId().getIdService().getId());
+		
+		return ResponseEntity.ok().body(ticket);
+		
+		
+		
+		
+	}
 	
 	
 }
