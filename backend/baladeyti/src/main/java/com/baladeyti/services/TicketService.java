@@ -107,7 +107,7 @@ public class TicketService {
 				Ticket t = tickets.get(i);
 				Personne user = t.getIdPersonne();
 				Queue queue = new Queue(t.getId(),i);
-				messageTemplate.convertAndSend("/topic/queue", queue);
+				messageTemplate.convertAndSendToUser(t.getIdPersonne().getEmail(),"/topic/queue", queue);
 				
 				
 				System.out.println("ticket id: " + t.getId() + "for user :" + user.getId());
