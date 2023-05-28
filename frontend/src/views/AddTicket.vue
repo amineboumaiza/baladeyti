@@ -48,7 +48,7 @@
           </option>
         </select><br>
         </div>
-        
+        <ErrorMsg v-if="FormValues.error" :error="FormValues.error"/>
         <button class="btn reserver"> Reserver</button>
       </form>
     </div>
@@ -58,22 +58,26 @@
 
 
 </div>
+
 </template>
 
 <script>
 import axios from 'axios';
+import ErrorMsg from '../components/ErrorMsg.vue'
 import UserLoginForm from './UserLoginForm.vue'
 
 export default {
   name : "AddTicket",
   components : {
     UserLoginForm,
+     ErrorMsg 
   },
   data() {
     return {
       FormValues:{
         idService :0,
-        idMunicipalite :0
+        idMunicipalite :0,
+        error:"",
             }, 
       selectedService:'',
       selectedMunicipality: '',
@@ -146,7 +150,7 @@ export default {
         this.$router.push({name : "TodayTickets"});
         } 
         catch(e){
-          console.log(e);
+          this.FormValues.error = "Vous avez déjà reservé une ticket.";
         }
       },
 
@@ -172,7 +176,7 @@ export default {
       type_client(){
         return this.$store.state.type_client;
       },
-    }
+    },
   
 };
 </script>
@@ -237,6 +241,7 @@ export default {
   padding: 0.5rem 1rem;
   font-size: 18px;
   font-family: Century Gothic;
+  margin-bottom: 10px;
 }
 
 .reserver:hover{

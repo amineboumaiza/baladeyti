@@ -58,7 +58,6 @@ async created(){
 
 <style>
     body {
-      
       background-size: cover;
       background-position: center center;
       background-attachment: fixed;

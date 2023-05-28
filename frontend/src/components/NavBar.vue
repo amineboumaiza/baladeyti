@@ -22,7 +22,7 @@
       <a class="navbar-brand "><router-link to='/'><img src="../assets/logo.png" width="180" height="60" class="d-inline-block align-top" alt="Your Logo"></router-link> </a>
       
        <div class="nav-item"><router-link to='/mytickets'>Historique</router-link></div> 
-      <div class="nav-item"><router-link to='/todaytickets'>Today's Tickets</router-link></div> 
+      <div class="nav-item"><router-link to='/todaytickets'>Tickets d'Aujourd'hui</router-link></div> 
       <div class="nav-item"><router-link to='/profile'>Profile</router-link></div> 
       <router-link to="" @click="handleLogOut">
         <button class="btn signup" >Déconnecter</button>
