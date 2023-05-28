@@ -24,6 +24,26 @@
         </div>
 
         <div class="form-group">
+           <select class="form-control"
+           v-model="selectedGovernorate" @change="getMunicipalities">
+            <option value="">Choisir votre gouvernot</option>
+            <option v-for="governorate in this.governorates" :value="governorate.idGouvernorat" :key="governorate.idGouvernorat">
+              {{ governorate.name }}
+            </option>
+          </select><br>
+        </div>
+        
+        <div class="form-group">
+          <select class="form-control" 
+         v-model="selectedMunicipality" @change="logging">
+          <option value="">Choisir votre municipalité</option>
+          <option v-for="municipality in this.municipalities" :value="municipality.id " :key="municipality.id">
+            {{ municipality.nom }}
+          </option>
+        </select><br>
+        </div>
+
+        <div class="form-group">
           <select class="form-control" 
          v-model="selectedService" @change="logging">
           <option value="">Choisir un service</option>
@@ -113,9 +133,13 @@ export default {
     data(){
         return{
             employes : [],
+            governorates: [],
+            municipalities: [],
             services : [],
             selectedService:'',
-           
+            selectedMunicipality: '',
+            selectedGovernorate: '',
+                
             AjoutFormValues: {
                 personne :{
                   nom: "",
@@ -125,6 +149,7 @@ export default {
                 },
                 error:"",
                 idService :0,
+                idMunicipalite :0,
             },
 
             ModifFormValues: {
@@ -173,6 +198,7 @@ export default {
         async handleSubmit() {
         
         this.AjoutFormValues.idService = this.selectedService;
+        this.AjoutFormValues.idMunicipalite = this.selectedMunicipality;
 
         const response = await axios.post("http://localhost:8080/personne/employe/create", this.AjoutFormValues);
       
@@ -188,7 +214,9 @@ export default {
         this.AjoutFormValues.personne.prenom ="";
         this.AjoutFormValues.personne.email ="";
         this.AjoutFormValues.personne.password ="";
-        this.AjoutFormValues.idService ="";
+        this.AjoutFormValues.idService = "";
+        this.AjoutFormValues.idMunicipalite = "";
+        this.AjoutFormValues.idGouvernorat = "";
 
            
         },
@@ -222,7 +250,39 @@ export default {
 
         },
 
-         async getServices() {
+      //get all gouvernorats
+     async getGovernorates() {
+     
+      try {
+        const response = await axios.get("http://localhost:8080/gouvernorat/all");
+        this.governorates = response.data;
+        console.log(response);
+
+        }
+        catch(e){
+          console.log(e);
+        }
+    },
+    //municipality by gouvernorat
+    getMunicipalities() {
+       if (this.selectedGovernorate) {
+        
+      const url = `http://localhost:8080/municipalite/gouvernorat/id/${this.selectedGovernorate}`;
+
+      axios.get(url)
+        .then(response => {
+          
+          this.municipalities = response.data;
+        })
+        .catch(e => {
+          console.error(e);
+        });
+    } else {
+      this.municipalities = [];
+    }
+    },
+
+    async getServices() {
       
       try {
         const response = await axios.get("http://localhost:8080/service/all");
@@ -238,6 +298,7 @@ export default {
     components: { ErrorMsg },
     mounted (){
          this.getEmployes();
+         this.getGovernorates();
          this.getServices();
     },
 
@@ -263,7 +324,7 @@ export default {
 
   .form-fluid{
     position: fixed;
-    top: 25%;
+    top: 17%;
     left: 50px;
     border-radius: 15px;
     box-shadow: 5px 5px 8px #888888;
@@ -285,6 +346,7 @@ export default {
   padding: 0.5rem 1rem;
   font-size: 18px;
   font-family: Century Gothic;
+  
 }
 
 .ajouter:hover{
