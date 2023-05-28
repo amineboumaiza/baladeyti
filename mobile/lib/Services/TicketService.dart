@@ -9,11 +9,11 @@ class AppTicket {
     var url = Uri.parse('http://10.0.2.2:8080/tickets/reserve');
     String? jwt = prefs.getString('jwt');
     var auth = 'Bearer $jwt';
-    print(auth);
-    print('idService ');
-    print(idService);
-    print('idMunicipalite ');
-    print(idMunicipalite);
+
+    // print('idService ');
+    // print(idService);
+    // print('idMunicipalite ');
+    // print(idMunicipalite);
     var headers = {
       'Authorization': auth,
       'Content-Type': 'application/json; charset=UTF-8',
@@ -35,8 +35,11 @@ class AppTicket {
 
       return Ticket;
     } else {
-      print(response.body);
+
       print("noon get user info");
+
+
+      return new ticketModel(0,' ');
       throw Exception();
     }
   }

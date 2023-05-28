@@ -214,42 +214,59 @@ class _CurrentTicketStreamState extends State<CurrentTicketStream> {
                             color: Colors.black, fontWeight: FontWeight.bold),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(left: 8.0),
-                        child: Center(
-                          child: StreamBuilder<http.Response>(
-                    stream: getRandomNumberFact(widget.ticket.id),
-                    builder: (context, snapshot) => snapshot.hasData
-                        ? Container(
-                          child:     snapshot.data!.body == '0' ? new Container(
-                           child:   Text(
-                          'Etat: En_cours' ,
-                          style: TextStyle(
-                              color: Colors.black, fontWeight: FontWeight.bold),
-                        ),
-                          ) : new Container(
-                            child: 
-                            Text(
-                          'Etat: ' + widget.ticket.etat,
-                          style: TextStyle(
-                              color: Colors.black, fontWeight: FontWeight.bold),
-                        ),
-                          )
+                          padding: EdgeInsets.only(left: 8.0),
+                          child: Center(
+                            child: StreamBuilder<http.Response>(
+                              stream: getRandomNumberFact(widget.ticket.id),
+                              builder: (context, snapshot) => snapshot.hasData
+                                  ? Container(
+                                      child: Column(children: [
+                                      if (int.parse(snapshot.data!.body) >
+                                          0) ...[
+                                        new Container(
+                                          child: Text(
+                                            'Etat: En_attente',
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        )
+                                      ] else if (int.parse(
+                                              snapshot.data!.body) ==
+                                          0) ...[
+                                        new Container(
+                                          child: Text(
+                                            'Etat: En_cours',
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ] else ...[
+                                        new Container(
+                                          child: Text(
+                                            'Etat: traité',
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ]
+                                    ])
 
-                        )
-                        : new Container(),
-                  ),
-                        )
-                        
-                        
-                        
-                      )
+                                      )
+                                  : new Container(),
+                            ),
+                          ))
                     ],
                   )
                 ],
               ),
-              SizedBox(height: 20,),
+              SizedBox(
+                height: 20,
+              ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center ,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     "Position : ",
@@ -263,20 +280,19 @@ class _CurrentTicketStreamState extends State<CurrentTicketStream> {
                     builder: (context, snapshot) => snapshot.hasData
                         ? Center(
                             child: Container(
-                               decoration: new BoxDecoration(
-    color: KRedColor
-  ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 1  , horizontal:15 ),
-                                child: Text(
-                                snapshot.data!.body,
+                            decoration: new BoxDecoration(color: KRedColor),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 1, horizontal: 15),
+                              child: Text(
+                                snapshot.data!.body.substring(0, 1),
                                 style: TextStyle(
                                     color: KWihteColor,
                                     fontSize: 30.0,
                                     fontWeight: FontWeight.bold),
-                                                        ),
                               ),
-                            ))
+                            ),
+                          ))
                         : CircularProgressIndicator(),
                   ),
                 ],
@@ -365,10 +381,14 @@ class _CurrentTicketStreamState extends State<CurrentTicketStream> {
                     return Text('out of  ');
                   }),
               SizedBox(height: 5),
-              Center(
-                child: widget.ticket.etat != 'en_attente'
-                    ? Container()
-                    : Align(
+              StreamBuilder<http.Response>(
+                              stream: getRandomNumberFact(widget.ticket.id),
+                              builder: (context, snapshot) => snapshot.hasData
+                                  ? Container(
+                                      child: Column(children: [
+                                      if (int.parse(snapshot.data!.body) >
+                                          0) ...[
+                                        new Align(
                         alignment: Alignment.center,
                         child: TextButton.icon(
                             style: ButtonStyle(
@@ -385,7 +405,16 @@ class _CurrentTicketStreamState extends State<CurrentTicketStream> {
                               ComfirmerAnuuler();
                             }),
                       ),
-              ),
+                                      ] else ...[
+                                        new Container(
+                                        ),
+                                      ]
+                                    ])
+
+                                      )
+                                  : new Container(),
+                            ),
+
               SizedBox(height: 2),
               Center(
                 child: Container(

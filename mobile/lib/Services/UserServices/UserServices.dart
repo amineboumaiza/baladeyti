@@ -40,8 +40,47 @@ class UserServices {
       print("noon get user info");
       throw Exception();
     }
-  }
 
+
+
+    
+  }
+  Future<UserApp> updateUserInfo(String email , String nom , String prenom ) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var url = Uri.parse('http://10.0.2.2:8080/profile/update');
+    String? jwt = prefs.getString('jwt');
+    var auth= 'Bearer $jwt'; 
+    print('jwt ');
+    print(jwt);
+
+    print(auth);
+    var headers = {'Authorization': auth};
+
+    late UserApp user;
+    final response = await http.put(url, headers: headers,
+          body: jsonEncode(
+            {'email': email,'nom': nom, 'prenom': prenom}));
+    print(response.statusCode);
+
+    if (response.statusCode == 200) {
+      print("yess ");
+
+      Map<String, dynamic> res =
+          json.decode(response.body) as Map<String, dynamic>;
+      print(res);
+      user = UserApp.fromMap(res);
+      prefs.setInt('UserID', user.id);
+      print("UserID ");
+      print(user.id);
+      return user;
+      //     return res['token'] as String;
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      print("noon get user info");
+      throw Exception();
+    }
+  }
   //get user personal info using ID
   // Future<UserApp> getUserInfoFromMail(String mail) async {
   //   return await UserColl.where('e-mail', isEqualTo: mail).get().then((value) =>

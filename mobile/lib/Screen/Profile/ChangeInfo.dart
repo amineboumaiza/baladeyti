@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../../Constant.dart';
 import '../../Models/Personne.dart';
+import '../../Services/TicketService.dart';
+import '../../Services/UserServices/UserServices.dart';
 import '../Widget/RoundedButton.dart';
 import '../Widget/TextFieldContainer.dart';
 
@@ -16,7 +18,10 @@ class ChangeInfo extends StatefulWidget {
 }
 
 class _ChangeInfoState extends State<ChangeInfo> {
- // final AuthService _authService = AuthService();
+    late String userLastName;
+  late String userName;
+  late String userMail;
+  RegExp exp = RegExp(r'^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$');
   toastMsg(String msg, BuildContext theContext) {
     print("toast affiche");
     ScaffoldMessenger.of(theContext).showSnackBar(SnackBar(
@@ -27,20 +32,9 @@ class _ChangeInfoState extends State<ChangeInfo> {
     ));
   }
 
- submitLog(UserApp us, bool passChange, BuildContext theContext) async {
-   /* if (_formKey.currentState!.validate() == true) {
-      try {
-        if (await _authService.updateUSerInfo(us, passChange) != null) {
-          Navigator.pop(theContext);
-        }
-      } on FirebaseAuthException catch (e) {
-        if (e.code == 'weak-password') {
-          toastMsg("Mot de passe est faible !", theContext);
-        } else {
-          toastMsg("Problem avec le serveur !", theContext);
-        }
-      }
-    }*/
+ submitLog(String Email, String nom, String prenom ,  BuildContext theContext) async {
+UserServices().updateUserInfo(Email , nom , prenom);
+
   }
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -169,89 +163,41 @@ class _ChangeInfoState extends State<ChangeInfo> {
                                       },
                                     ),
                                     const SizedBox(height: 15),
-                                    TextFormField(
-                                    initialValue: widget.passedUser.email,
-                                      validator: (value) {
-                                        if (value == '') {
-                                          return "le email est vide !";
-                                        }
-                                   
-                                      },
-                                      decoration: InputDecoration(
-                                        hintText: '+216 ** *** ***',
-                                        
-                                        labelStyle:
-                                            const TextStyle(color: KBlackColor),
-                                        labelText: 'Email :',
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          borderSide: const BorderSide(
-                                            color: KGreyColor,
-                                            width: 2.0,
-                                          ),
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          borderSide: const BorderSide(
-                                            color: KBlackColor,
-                                            width: 2.0,
-                                          ),
-                                        ),
-                                      ),
-                                      keyboardType: TextInputType.phone,
-                                      onChanged: (newValue) {
-                                    //    widget.passedUser.userPhone =
-                                            newValue.toString();
-                                      },
-                                    ),
+                          TextFormField(
+                            validator: (value) {
+                              if (value.toString().isEmpty) {
+                                return "Adesse e-mail est vide !";
+                              } else if (!exp.hasMatch(value!)) {
+                                return "Adesse e-mail incorrect !";
+                              }
+                            },
+                            decoration: InputDecoration(
+                              hintText: 'Entrez votre e-mail',
+                              labelStyle: const TextStyle(color: KBlackColor),
+                              labelText: 'E-mail :',
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5),
+                                borderSide: const BorderSide(
+                                  color: KGreyColor,
+                                  width: 2.0,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5),
+                                borderSide: const BorderSide(
+                                  color: KBlackColor,
+                                  width: 2.0,
+                                ),
+                              ),
+                            ),
+                            keyboardType: TextInputType.text,
+                            onChanged: (newValue) {
+                              userMail = newValue.toString();
+                            },
+                          ),
+                          const SizedBox(height: 15),
                                     const SizedBox(height: 15),
-                                    TextFormField(
-                                      validator: (value) {
-                                        if (value!.length < 6 &&
-                                            value.isNotEmpty) {
-                                          return "Mot de passe doit étre de 6 caracteres minimum !";
-                                        }
-                                      },
-                                      obscureText: showPassword,
-                                      decoration: InputDecoration(
-                                          focusedBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                            borderSide: const BorderSide(
-                                              color: KBlackColor,
-                                              width: 2.0,
-                                            ),
-                                          ),
-                                          enabledBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                            borderSide: const BorderSide(
-                                              color: KGreyColor,
-                                              width: 2.0,
-                                            ),
-                                          ),
-                                          hintText: "Nouveau mot de passe ",
-                                          suffixIcon: IconButton(
-                                            icon: Icon(
-                                              (showPassword)
-                                                  ? Icons.visibility_off
-                                                  : Icons.visibility,
-                                              color: KBlackColor,
-                                            ),
-                                            onPressed: () {
-                                              setState(() {
-                                                showPassword = !showPassword;
-                                              });
-                                            },
-                                          ),
-                                          border: InputBorder.none),
-                                      keyboardType: TextInputType.emailAddress,
-                                      onChanged: (newValue) {
-                                        tempStr = newValue;
-                                      },
-                                    ),
+
                                   ],
                                 ),
                               ),
@@ -271,35 +217,6 @@ class _ChangeInfoState extends State<ChangeInfo> {
                           color: KPrimaryColor,
                           textColor: KWihteColor,
                           onPressed: () {
-                          /*  if (!connectivityChangeNotifier.connected) {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                content: const Text(
-                                  'No Internet Connection!!!',
-                                ),
-                                backgroundColor: Colors.red,
-                                behavior: SnackBarBehavior.floating,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(24),
-                                ),
-                                action: SnackBarAction(
-                                  label: 'options',
-                                  onPressed: () {
-                                    print("snack is taped ");
-                                    //AppSettings.openWIFISettings();
-                                  },
-                                  textColor: Colors.white,
-                                  disabledTextColor: Colors.grey,
-                                ),
-                              ));
-                            } else {
-                              if (tempStr.isNotEmpty) {
-                                widget.passedUser.userPass = tempStr;
-                                submitLog(widget.passedUser, true, context);
-                              } else {
-                                submitLog(widget.passedUser, false, context);
-                              }
-                            }*/
                           },
                         ),
                       ],

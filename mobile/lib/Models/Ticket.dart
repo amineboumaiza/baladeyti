@@ -8,16 +8,12 @@ class ticketModel {
   int idGouvernorat = 0;
 
 
-  UserApp(
+  ticketModel(
     int ID,
-    String name,
+    String Num , 
   ) {
     this.id = ID;
-    this.num = num;
-    this.date = date;
-    this.etat = etat;
-    this.idMunicipalite = idMunicipalite;
-    this.idGouvernorat = idGouvernorat;
+    this.num = Num;
   }
 
   ticketModel.empty();

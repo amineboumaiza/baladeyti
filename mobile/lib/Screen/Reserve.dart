@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:mobile/Models/Gouvernorat.dart';
 import 'package:mobile/Models/Ticket.dart';
 import 'package:mobile/Screen/CureentTicket.dart';
+import 'package:mobile/Screen/CureentTicketStream.dart';
 import 'package:mobile/Services/TicketService.dart';
+import 'package:motion_toast/resources/arrays.dart';
 import '../Constant.dart';
 import '../Models/Services.dart';
 import '../Models/municipality.dart';
@@ -11,14 +13,15 @@ import '../Services/MunicipalityService.dart';
 import '../Services/Service.dart';
 import 'Widget/AppBarMc.dart';
 import 'Widget/RoundedButton.dart';
+import 'package:motion_toast/motion_toast.dart';
 
-class MoviesList extends StatefulWidget {
-  const MoviesList({super.key});
+class Reserve extends StatefulWidget {
+  const Reserve({super.key});
   @override
-  State<MoviesList> createState() => _MoviesListState();
+  State<Reserve> createState() => _ReserveState();
 }
 
-class _MoviesListState extends State<MoviesList> {
+class _ReserveState extends State<Reserve> {
   late List<ServiceModel> Allservice = List.empty(growable: true);
   AppServices s = AppServices();
   AppGouvernorat g = AppGouvernorat();
@@ -26,16 +29,29 @@ class _MoviesListState extends State<MoviesList> {
   AppTicket _ticketService = AppTicket();
   submitReserve(int idService, int idMuni, BuildContext theContext) async {
     if (idService > 0 && idMuni > 0) {
+      print("xxxxxxxxxxxxxxxx oui xxxxxxxxxxxxxxxxx");
+
       ticketModel? T = await _ticketService.ReseveTicket(idService, idMuni);
-      if (T != null) {
-        
-                            Navigator.push(
-                             context,
-                             MaterialPageRoute(builder: (context) => CurrentTicket(ticket: T,))
-                           );
+      if (T.id == 0) {
+        print("xxxxxxxxxxxxxxxx Nonnn 1  xxxxxxxxxxxxxxxxx");
+_displayErrorMotionToast();
+      //  _displayWarningMotionToast();
       } else {
-        //toastMsg("Mot de passe incorrect !", theContext);
+        print("xxxxxxxxxxxxxxxx OUI 222 xxxxxxxxxxxxxxxxx");
+       // _displayWarningMotionToast();
+
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => CurrentTicketStream(
+                      ticket: T,
+                    )));
+                    _displaySuccessMotionToast();
       }
+    } else {
+      print("xxxxxxxxxxxxxxxx nooooonn xxxxxxxxxxxxxxxxx");
+         _displayWarningMotionToast();
+
     }
   }
 
@@ -209,5 +225,58 @@ class _MoviesListState extends State<MoviesList> {
         ]),
       ),
     );
+  }
+
+  void _displayWarningMotionToast() {
+    MotionToast.warning(
+      title: const Text(
+        'Veuilliez choisir tous les options ',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      description: const Text('Veuilliez choisir tous les options '),
+      animationCurve: Curves.bounceIn,
+      borderRadius: 0,
+      animationDuration: const Duration(milliseconds: 1000),
+    ).show(context);
+  }
+
+
+    void _displaySuccessMotionToast() {
+    MotionToast toast = MotionToast.success(
+      title: const Text(
+        'Votre Ticket est bien reservez ',
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      description: const Text(
+        'Votre Ticket est bien reservez',
+        style: TextStyle(fontSize: 12),
+      ),
+      // layoutOrientation: ToastOrientation.rtl,
+      // animationType: AnimationType.fromRight,
+      dismissable: true,
+    );
+    toast.show(context);
+    Future.delayed(const Duration(seconds: 4)).then((value) {
+      toast.dismiss();
+    });
+  }
+
+   void _displayErrorMotionToast() {
+    MotionToast.error(
+      title: const Text(
+        'Vous Avez reservez deja une Tickets pour ce Service',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      description: const Text('Vous Avez reservez deja une Tickets pour ce Service'),
+      // position: MotionToastPosition.top,
+      barrierColor: Colors.black.withOpacity(0.3),
+      width: 300,
+      height: 80,
+      dismissable: false,
+    ).show(context);
   }
 }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'Screen/Authentication/SignIn.dart';
 import 'Screen/Authentication/SignUp.dart';
 import 'Screen/HomePage.dart';
-import 'Screen/MoviesList.dart';
+import 'Screen/Reserve.dart';
 import 'Screen/Profile/profil.dart';
 import 'Screen/Widget/splashScreen.dart';
 import 'network.dart';
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
           '/signUp': (context) => const signUp(),
           '/Home': (context) => const HomePage(),
           '/Profile': (context) => const Profil(),
-          '/MoviesList': (context) => const MoviesList(),
+          '/MoviesList': (context) => const Reserve(),
         },
       );
   }

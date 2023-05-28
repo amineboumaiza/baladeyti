@@ -40,6 +40,7 @@ class AuthService {
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.
+      return null;
       print("noon");
       throw Exception();
     }

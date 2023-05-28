@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../Constant.dart';
-import 'MoviesList.dart';
+import 'Reserve.dart';
 import 'MyTicket.dart';
 import 'Profile/profil.dart';
 
@@ -28,14 +28,14 @@ class _HomePageState extends State<HomePage> {
         return const MyHome();
 
       case 1:
-        return const MoviesList();
+        return const Reserve();
       case 2:
         return const Profil();
 
       default:
-        const MoviesList();
+        const Reserve();
     }
-    return const MoviesList();
+    return const Reserve();
   }
 
   @override

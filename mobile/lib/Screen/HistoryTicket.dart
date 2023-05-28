@@ -32,34 +32,36 @@ class _HistoryTicketState extends State<HistoryTicket> {
         style: TextStyle(color: KBlackColor)),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-                                FutureBuilder<Object>(
-                          future: AppTicket().getAllTicketHistory(),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              List<ticketModel> lm =
-                                  snapshot.data as List<ticketModel>;
-      
-                              return ListView.builder(
-                                itemCount: lm.length,
-                                shrinkWrap: true,
-                                itemBuilder: (context, index) {
-                                  return Container(
-                                    child: Column(
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            SizedBox(
-                                              height: 3,
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: TicketMaterial(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ListView(
+            shrinkWrap: true,
+            physics: ClampingScrollPhysics(),
+            children: [
+                                  FutureBuilder<Object>(
+                            future: AppTicket().getAllTicketHistory(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                List<ticketModel> lm =
+                                    snapshot.data as List<ticketModel>;
+              
+                                return ListView.builder(
+                                  itemCount: lm.length,
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) {
+                                    return Container(
+                                      child: Column(
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              SizedBox(
+                                                height: 5,
+                                              ),
+                                              TicketMaterial(
                                                 height: 140,
                                                 colorBackground: KGreyColor,
                                                 leftChild: Padding(
@@ -148,7 +150,7 @@ class _HistoryTicketState extends State<HistoryTicket> {
                                                           mainAxisAlignment:
                                                               MainAxisAlignment
                                                                   .center, //Center Row contents horizontally,
-                                            
+                                              
                                                           children: [
                                                             Text(
                                                               'Date : ',
@@ -244,18 +246,18 @@ class _HistoryTicketState extends State<HistoryTicket> {
                                                 ),
                                                 rightChild: Container(),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              );
-                            }
-                            return Container();
-                          })
-          ],
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                );
+                              }
+                              return Container();
+                            })
+            ],
+          ),
         ),
       )
     );
