@@ -118,15 +118,17 @@ public class TicketService {
 		
 		
 public void updateAnnuleTicket(int idTicket) {
-			
 			List<Ticket> tickets = ticketRepository.findTicketsEnAttente(idTicket);
 			if(tickets.size() == 0)
 				return;
+			Ticket ticket = findById(idTicket);
+			int q = getQueue(idTicket, ticket.getIdService().getId(), ticket.getIdMunicipalite().getId());
+			
 			for(int i=0;i < tickets.size();i++) {
 				Ticket t = tickets.get(i);
 				Personne user = t.getIdPersonne();
-				Queue queue = new Queue(t.getId(),i);
-				messageTemplate.convertAndSend("/topic/queue", queue);
+				Queue queue = new Queue(t.getId(),i+q);
+				messageTemplate.convertAndSend("/topic/queue/user/" + Integer.toString(user.getId()), queue);
 				
 				
 				System.out.println("ticket id: " + t.getId() + "for user :" + user.getId());
