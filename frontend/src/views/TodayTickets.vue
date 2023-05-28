@@ -1,7 +1,7 @@
 <template>
 <div >
 <section class="container" v-if="user" >
-<h1>Today's Tickets</h1>
+<h1>Tickets d'Aujourd'hui</h1>
   <div class="row" >
     <article class="card fl-left" v-for="ticket in tickets" :key="ticket.id">
       <section class="date">
@@ -24,7 +24,11 @@
             {{ticket.idService.nom}}
           </p>
         </div>
-        <a href="#">{{ticket.etat}}</a>
+        <img src="../assets/annulerTicket.png" @click="handleAnnuler(ticket.id)">
+        <a :id="'etat' + ticket.id" href="#">{{ticket.etat}}</a>
+        
+        <h5 :id="'pos' + ticket.id" class="position"></h5>
+        <div hidden>{{ this.getPosition(ticket.id) }}</div>
       </section>
     </article>
 
@@ -38,30 +42,90 @@
 
 <script>
 import axios from 'axios'
+import SockJS from 'sockjs-client';
+import Stomp from 'stompjs';
 export default {
     name : "MyTickets",
     data(){
         return{
             tickets : [],
+            position : '',
+            infos : {},
         }
+    },
+    mounted (){
+    this.getTickets();
+    this.getInfos();
+    // Establish a WebSocket connection using SockJS
+    const socket = new SockJS("http://localhost:8080/web-socket");
+    this.client = Stomp.over(socket);
+
+    // Handle connection open event
+    this.client.connect({}, (frame) => {
+      console.log(frame);
+      console.log("WebSocket connection established.");
+
+      // Subscribe to the topic where messages will be received
+      this.client.subscribe("/topic/queue/user/"+ this.infos.id, (message) => {
+        const body = JSON.parse(message.body);
+        console.log("Received message:", body);
+
+        //FONCTION ILLY TRAJA3LEK FL POSITION
+        let pos = document.getElementById("pos"+body.idTicket);
+        pos.innerHTML = "Position : "+body.pos
+
+       if (body.pos == 0){
+        let etat = document.getElementById("etat"+body.idTicket);
+       etat.innerHTML = "EN COURS"
+       }
+        
+      });
+    });
     },
     methods : {
         getTickets(){
-            axios.get("http://localhost:8080/tickets/today")
+            axios.get("http://localhost:8080/tickets/today/enCours-enAttente")
             .then((res) => {
                this.tickets = res.data;
                console.log(res.data);
     
             }).catch((err) => {
-                console.error(err)
+                console.log(err)
             });
-        },   
-    } ,
-    mounted (){
-         this.getTickets()
+        },  
+        
+    async handleAnnuler(id){
+        const response = await axios.put("http://localhost:8080/tickets/update/annuler/"+id)
+        this.getTickets();
+        console.log(response) 
+       
     },
 
-    computed:{
+     async getPosition(id){
+       const response =  await axios.get("http://localhost:8080/tickets/queue/"+id)
+       console.log(response.data);
+      
+       let pos = document.getElementById("pos"+id);
+       pos.innerHTML = "Position : "+response.data
+    },
+
+     // Send a message to the server
+    sendMessage(message) {
+      this.client.send("/send-message", {}, message);
+    },
+
+    getInfos(){
+            axios.get("http://localhost:8080/profile")
+            .then((res) => {
+               console.log(res.data)
+               this.infos = res.data
+            }).catch((err) => {
+                console.error(err)
+            });
+        },
+    },
+
+    computed:{ 
         user(){
           return this.$store.state.user;
         },
@@ -193,7 +257,7 @@ h1 {
 
 .card-cont a {
     background-color: #faf9f9;
-    color : black;
+    color : rgb(49, 3, 47);
     border: solid 1px #9e3ffd;
 }
 
@@ -219,4 +283,27 @@ h1 {
     top: 150px;
     left: 20px;
 }
+
+
+img{
+    position: relative;
+    bottom: 130px;
+    left: 380px;
+    width: 25px;
+    height: 35px;
+    cursor: pointer;
+}
+
+img:hover{
+   transform: scale(1.05);
+}
+
+.position{
+    font-size: 20px;
+    text-align: center;
+    color: rgb(69, 110, 3);
+    position: relative;
+
+}
+
 </style>

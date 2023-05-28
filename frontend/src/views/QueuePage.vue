@@ -1,105 +1,124 @@
 <template>
-
-    
-      <div class="annuler">
-        <img src="../assets/annuler.png">
-      </div>
-
-      <div class="col-3 ticket">
-        <img src="../assets/ticket.png">
-      </div>
-
-      <div class="col-3 numero">
-        <h1>1-1-9</h1>
-      </div>
-
-      <div class="confirmer">
-        <img src="../assets/confirmer.png">
-      </div>
-
-
-
+  <div>
+    <div class="wrapper">
+      <a href="#" class="accept button" @click="handleTraiter(this.ticketEncours.id)"
+        >SUIVANT <img src="../assets/check.svg" class="check"
+      ></a>
+      <span class="digit ">{{ this.ticketEncours.num }}</span>
+      <a href="#" class="deny button" @click="handleAnnuler(this.ticketEncours.id)">ANNULER
+         <img src="../assets/close.svg" class="close" ></a>
+    </div>
+  </div>
 </template>
 
- 
-
 <script>
+import axios from 'axios'
 export default {
-    name : "HomePage",
+  
+    name : "QueuePage",
     data() {
     return {
+      ticketEncours : {}
       
     };
   },
-   
+
+  methods :{
+    async getTicketEnCours(){
+      const response = await axios.get("http://localhost:8080/tickets/employe/enCours")
+      this.ticketEncours = response.data;
+      console.log(response)
+    },
+     async handleAnnuler(id){
+        const response = await axios.put("http://localhost:8080/tickets/update/annuler/"+id)
+        this.getTicketEnCours();
+        console.log(response) 
+    },
+
+    async handleTraiter(id){
+        const response = await axios.put("http://localhost:8080/tickets/update/traite/"+id)
+        this.getTicketEnCours();
+        console.log(response) 
+    }
+  },
+
+  mounted(){
+    this.getTicketEnCours()
+  },
+
 }
 </script>
 
-
-
 <style scoped>
+body {
+  background-color: #d4adfc;
+}
+* {
+  padding: 0;
+  margin: 0;
+}
+.digit {
 
-
-
-.annuler{
-    position: absolute;
-    left: 65px;
-    bottom: 250px;
-    width: 300px;
+  border: 10px solid #5c469c; 
+  border-radius: 20px;
+  display: inline-block;
+  font-size: 200px;
+  color: #5c469c;
+  padding: 25px;
+  line-height: 1;
+}
+.wrapper {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 0;
+  padding: 0;
 }
 
-.confirmer{
-    position: absolute;
-    right: 10px;
-    bottom: 250px;
-    width: 300px;
+a {
+  text-decoration: none;
+}
+.accept,
+.deny {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 10px;
+
 }
 
-.ticket{
-    position: absolute;
-    left: 500px;
-    bottom: 200px;
-    width: 300px;
+.accept {
+  color: #fff;
+  background: #249f42;
+  border-radius: 10px;
+  padding: 15px 20px;
+  box-shadow: 0 4px 0 0 #20923d;
+}
+.accept:hover {
+  background: #27ad48;
+  box-shadow: 0 4px 0 0 #20923d;
+}
+.deny {
+  color: #fff;
+  background: #e5325c;
+  border-radius: 10px;
+  padding: 15px 20px;
+  box-shadow: 0 4px 0 0 #e91f4e;
+}
+.deny:hover {
+  background: #cf3d5f;
+  box-shadow: 0 4px 0 0 #e91f4e;
 }
 
-.numero{
-    position: absolute;
-    left: 660px;
-    top: 480px;
-    width: 300px;
+.check,
+.close {
+  width: 20px;
+  filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(123deg)
+    brightness(101%) contrast(105%);
 }
-.numero h1{
-  color : rgb(255, 255, 255);
-  font-size: 45px;
-  font-weight: bolder;
-  font-family: 'Courier New', Courier, monospace;
+.button:active {
+  box-shadow: 0 5px #8f8f8f;
+  transform: translateY(4px);
 }
-
-.ticket img{
-    width: 350px;
-    height: 350px;
-    cursor: pointer;
-}
-
-.annuler img{
-    width: 250px;
-    height: 250px;
-    cursor: pointer;
-}
-
-.annuler:hover{
-    transform: scale(1.02);
-}
-
-.confirmer img{
-    width: 250px;
-    height: 250px;
-    cursor: pointer;
-}
-
-.confirmer:hover{
-    transform: scale(1.02);
-}
-
 
 </style>

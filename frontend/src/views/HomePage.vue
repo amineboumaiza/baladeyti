@@ -80,6 +80,8 @@ span{
   padding: 0.5rem 1rem;
   font-size: 18px;
   font-family: Century Gothic;
+  position: relative;
+  left : 430px;
 }
 
 .reserver:hover{
