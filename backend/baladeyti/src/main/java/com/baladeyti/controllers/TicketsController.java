@@ -87,6 +87,9 @@ public class TicketsController {
 
 
 		Ticket ticket = new Ticket(numTicket,date,Eetat.en_attente,service,municipalite,personne);
+		Ticket ticketEnCours = ticketService.findTicketEnCoursByEmploye(ticket.getIdService().getId(), ticket.getIdMunicipalite().getId());
+		if(ticketEnCours == null)
+			ticket.setEtat(Eetat.en_cours);
 		Ticket savedTicket = ticketService.save(ticket);
 		
 		return ResponseEntity.ok().body(savedTicket);
