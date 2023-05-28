@@ -14,27 +14,25 @@ import '../Services/GouvernoratService.dart';
 import '../Services/MunicipalityService.dart';
 import '../Services/Service.dart';
 
-
-
 class Data {
-  StreamController<String> _dataStreamController = StreamController<String>.broadcast();
+  StreamController<String> _dataStreamController =
+      StreamController<String>.broadcast();
   Stream<String> get dataStream => _dataStreamController.stream;
 
   String _variable = '';
 
   Future<void> fetchData(int idTick) async {
-   var url = Uri.parse('http://10.0.2.2:8080/tickets/queue/$idTick');
-     SharedPreferences prefs = await SharedPreferences.getInstance();
-   String? jwt = prefs.getString('jwt');
+    var url = Uri.parse('http://10.0.2.2:8080/tickets/queue/$idTick');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? jwt = prefs.getString('jwt');
 
-     var auth = 'Bearer $jwt';
+    var auth = 'Bearer $jwt';
 
-       var headers = {'Authorization': auth};
+    var headers = {'Authorization': auth};
     print("ouiiiiiiiiiiii status code :  1");
 
     final response = await http.get(url, headers: headers);
     print(response.statusCode);
-
 
     if (response.statusCode == 200) {
       _variable = response.body;
@@ -48,8 +46,6 @@ class Data {
     _dataStreamController.close();
   }
 }
-
-
 
 // class Data {
 //   static Future<String> fetchData(int idTick) async {
@@ -77,7 +73,6 @@ class Data {
 //     }
 //   }
 
-
 // }
 
 class CurrentTicketStream extends StatefulWidget {
@@ -100,38 +95,36 @@ class _CurrentTicketStreamState extends State<CurrentTicketStream> {
   late Future<ServiceModel> _serviceModel;
   late Future<GouvernoratModel> _gouvernoratModel;
   Data data = Data();
-Stream<http.Response> getRandomNumberFact(int idTick) async* {
-yield* Stream.periodic(Duration(seconds: 5), (_) async {
-     var url = Uri.parse('http://10.0.2.2:8080/tickets/queue/$idTick');
-     SharedPreferences prefs = await SharedPreferences.getInstance();
-   String? jwt = prefs.getString('jwt');
+  Stream<http.Response> getRandomNumberFact(int idTick) async* {
+    yield* Stream.periodic(Duration(seconds: 4), (_) async {
+      var url = Uri.parse('http://10.0.2.2:8080/tickets/queue/$idTick');
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? jwt = prefs.getString('jwt');
 
-     var auth = 'Bearer $jwt';
+      var auth = 'Bearer $jwt';
 
-       var headers = {'Authorization': auth};
-    print("ouiiiiiiiiiiii status code :  1");
+      var headers = {'Authorization': auth};
+      print("ouiiiiiiiiiiii status code :  1");
 
-    //final response = await http.get(url, headers: headers);
-    //print(response.statusCode);
+      //final response = await http.get(url, headers: headers);
+      //print(response.statusCode);
 
-  return http.get(url, headers: headers);
-}).asyncMap((event) async => await event);
-}
+      return http.get(url, headers: headers);
+    }).asyncMap((event) async => await event);
+  }
+
   @override
-  void initState()  {
+  void initState() {
     super.initState();
     _municipalityModel = m.getOneMunicipality(widget.ticket.idMunicipalite);
     _serviceModel = s.getOneService(widget.ticket.idService);
     _gouvernoratModel = g.getOneGouvernorat(widget.ticket.idGouvernorat);
 
-print("on initit xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+    print("on initit xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
 
-   data.fetchData(widget.ticket.id);
+    data.fetchData(widget.ticket.id);
 
- 
-   print("on initit xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-
-
+    print("on initit xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
   }
 
   @override
@@ -222,53 +215,72 @@ print("on initit xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
                       ),
                       Padding(
                         padding: EdgeInsets.only(left: 8.0),
-                        child: Text(
+                        child: Center(
+                          child: StreamBuilder<http.Response>(
+                    stream: getRandomNumberFact(widget.ticket.id),
+                    builder: (context, snapshot) => snapshot.hasData
+                        ? Container(
+                          child:     snapshot.data!.body == '0' ? new Container(
+                           child:   Text(
+                          'Etat: En_cours' ,
+                          style: TextStyle(
+                              color: Colors.black, fontWeight: FontWeight.bold),
+                        ),
+                          ) : new Container(
+                            child: 
+                            Text(
                           'Etat: ' + widget.ticket.etat,
                           style: TextStyle(
                               color: Colors.black, fontWeight: FontWeight.bold),
                         ),
+                          )
+
+                        )
+                        : new Container(),
+                  ),
+                        )
+                        
+                        
+                        
                       )
                     ],
                   )
                 ],
-              ), 
-              Center(
-          child: StreamBuilder<String>(
-            stream:  data.dataStream,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                
-                return Column(
-                  children: [
-                    Row(
-                      children: [
-                        Text("Position :"),
-                                            Text(snapshot.data!),
-
-                      ],
-                    ),
-                  ],
-                ); // Display the data in a text widget
-              } else if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              } else {
-                print(snapshot);
-                return Column(
-                  children: [
-                    
-                    Text("xxxxxxxxxxx2xxxxxxxxxxxxxxxxxxx"),
-                    
-                  ],
-                );
-                
-              }
-            },
-          ),),StreamBuilder<http.Response>(
-  stream: getRandomNumberFact(78),
-  builder: (context, snapshot) => snapshot.hasData
-      ? Center(child: Text(snapshot.data!.body))
-      : CircularProgressIndicator(),
-),
+              ),
+              SizedBox(height: 20,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center ,
+                children: [
+                  Text(
+                    "Position : ",
+                    style: TextStyle(
+                        color: KRedColor,
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  StreamBuilder<http.Response>(
+                    stream: getRandomNumberFact(widget.ticket.id),
+                    builder: (context, snapshot) => snapshot.hasData
+                        ? Center(
+                            child: Container(
+                               decoration: new BoxDecoration(
+    color: KRedColor
+  ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 1  , horizontal:15 ),
+                                child: Text(
+                                snapshot.data!.body,
+                                style: TextStyle(
+                                    color: KWihteColor,
+                                    fontSize: 30.0,
+                                    fontWeight: FontWeight.bold),
+                                                        ),
+                              ),
+                            ))
+                        : CircularProgressIndicator(),
+                  ),
+                ],
+              ),
               FutureBuilder<ServiceModel>(
                   future: _serviceModel,
                   builder: (context, snapshot) {
@@ -352,7 +364,7 @@ print("on initit xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
                     }
                     return Text('out of  ');
                   }),
-              SizedBox(height: 10),
+              SizedBox(height: 5),
               Center(
                 child: widget.ticket.etat != 'en_attente'
                     ? Container()
@@ -374,13 +386,11 @@ print("on initit xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
                             }),
                       ),
               ),
-              SizedBox(height: 10),
-              Padding(
-                padding:
-                    const EdgeInsets.only(top: 0.0, left: 60.0, right: 20.0),
+              SizedBox(height: 2),
+              Center(
                 child: Container(
-                  width: 100.0,
-                  height: 20.0,
+                  width: 70.0,
+                  height: 30.0,
                   decoration: const BoxDecoration(
                       image: DecorationImage(
                           image: AssetImage('assets/logo.png'),
@@ -422,32 +432,32 @@ Widget ticketDetailsWidget(String firstTitle, String firstDesc) {
   );
 }
 
-
 class PeriodicRequester extends StatelessWidget {
-Stream<http.Response> getRandomNumberFact(int idTick) async* {
-yield* Stream.periodic(Duration(seconds: 5), (_) async {
-     var url = Uri.parse('http://10.0.2.2:8080/tickets/queue/$idTick');
-     SharedPreferences prefs = await SharedPreferences.getInstance();
-   String? jwt = prefs.getString('jwt');
+  Stream<http.Response> getRandomNumberFact(int idTick) async* {
+    yield* Stream.periodic(Duration(seconds: 5), (_) async {
+      var url = Uri.parse('http://10.0.2.2:8080/tickets/queue/$idTick');
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? jwt = prefs.getString('jwt');
 
-     var auth = 'Bearer $jwt';
+      var auth = 'Bearer $jwt';
 
-       var headers = {'Authorization': auth};
-    print("ouiiiiiiiiiiii status code :  1");
+      var headers = {'Authorization': auth};
+      print("ouiiiiiiiiiiii status code :  1");
 
-    //final response = await http.get(url, headers: headers);
-    //print(response.statusCode);
+      //final response = await http.get(url, headers: headers);
+      //print(response.statusCode);
 
-  return http.get(url, headers: headers);
-}).asyncMap((event) async => await event);
-}
-@override
-Widget build(BuildContext context) {
-return StreamBuilder<http.Response>(
-  stream: getRandomNumberFact(78),
-  builder: (context, snapshot) => snapshot.hasData
-      ? Center(child: Text(snapshot.data!.body))
-      : CircularProgressIndicator(),
-);
-}
+      return http.get(url, headers: headers);
+    }).asyncMap((event) async => await event);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<http.Response>(
+      stream: getRandomNumberFact(78),
+      builder: (context, snapshot) => snapshot.hasData
+          ? Center(child: Text(snapshot.data!.body))
+          : CircularProgressIndicator(),
+    );
+  }
 }
