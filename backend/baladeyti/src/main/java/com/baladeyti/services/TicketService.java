@@ -97,7 +97,8 @@ public class TicketService {
 		
 		
 		public void updateTraiteTicket(int idTicket) {
-			
+			Ticket traiteTicket = findById(idTicket);
+			messageTemplate.convertAndSend("/topic/queue/user/" + Integer.toString(traiteTicket.getIdPersonne().getId()), new Queue(traiteTicket.getId(),-1));
 			List<Ticket> tickets = ticketRepository.findTicketsEnAttente(idTicket);
 			if(tickets.size() == 0)
 				return;
@@ -118,7 +119,10 @@ public class TicketService {
 		
 		
 public void updateAnnuleTicket(int idTicket) {
-			List<Ticket> tickets = ticketRepository.findTicketsEnAttente(idTicket);
+	Ticket annulerTicket = findById(idTicket);
+	messageTemplate.convertAndSend("/topic/queue/user/" + Integer.toString(annulerTicket.getIdPersonne().getId()), new Queue(annulerTicket.getId(),-1));		
+	
+	List<Ticket> tickets = ticketRepository.findTicketsEnAttente(idTicket);
 			if(tickets.size() == 0)
 				return;
 			Ticket ticket = findById(idTicket);
