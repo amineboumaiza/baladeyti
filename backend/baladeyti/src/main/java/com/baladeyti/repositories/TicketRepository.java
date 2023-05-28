@@ -68,10 +68,11 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer>{
 	
 	@Query(value="SELECT t FROM Ticket t WHERE "
 			+ "t.idService.id = :idService "
-			+ "AND t.etat = 'en_cours'"
+			+ "AND t.idMunicipalite.id =  :idMunicipalite "
+			+ "AND t.etat = 'en_cours' "
 			+ "ORDER BY t.date limit 1" )
-	public Ticket findTicketEnCoursByEmploye(
-			@Param("idService") int idService);
+	public Ticket findTicketEnCoursByService(
+			@Param("idService") int idService,@Param("idMunicipalite") int idMunicipalite);
 	
 	
 	

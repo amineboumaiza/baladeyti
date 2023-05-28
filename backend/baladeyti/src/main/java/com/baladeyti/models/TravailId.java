@@ -24,6 +24,9 @@ public class TravailId implements Serializable{
 	@ManyToOne
 	@JoinColumn(name="id_citoyen")
 	private Personne idPersonne;
+	@ManyToOne
+	@JoinColumn(name="id_municipalite")
+	private Municipalite idMunicipalite;
 	
 	
 	

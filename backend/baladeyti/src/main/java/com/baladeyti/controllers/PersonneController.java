@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baladeyti.models.ERole;
+import com.baladeyti.models.Municipalite;
 import com.baladeyti.models.Personne;
 import com.baladeyti.models.Service;
 import com.baladeyti.models.Travail;
@@ -27,6 +28,7 @@ import com.baladeyti.models.TravailId;
 import com.baladeyti.payload.requests.EmployeRequest;
 import com.baladeyti.repositories.PersonneRepository;
 import com.baladeyti.repositories.TravailRepository;
+import com.baladeyti.services.MunicipaliteService;
 import com.baladeyti.services.ServiceService;
 
 import jakarta.transaction.Transactional;
@@ -45,6 +47,9 @@ public class PersonneController {
 	@Autowired
 	ServiceService serviceService;
 
+	@Autowired
+	private MunicipaliteService municipaliteService;
+	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
@@ -81,7 +86,8 @@ public class PersonneController {
 		personne.setPassword(passwordEncoder.encode(personne.getPassword()));
 		personneRepository.save(personne);
 		Service service = serviceService.findById(employe.getIdService());
-		TravailId id = new TravailId(service,personne);
+		Municipalite municipalite = municipaliteService.findById(employe.getIdMunicipalite());
+		TravailId id = new TravailId(service,personne,municipalite);
 		Travail travail = new Travail(id,new Date());
 		travailRepository.save(travail);
 		

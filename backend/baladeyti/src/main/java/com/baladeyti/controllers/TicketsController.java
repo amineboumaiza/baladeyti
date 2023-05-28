@@ -292,7 +292,7 @@ public class TicketsController {
 		
 	}
 
-	// traja3lek el ticket en cours lel employe eli chedid el service heka fel muuniciaplite heki
+	
 	@GetMapping("/employe/enCours")
 	@PreAuthorize("hasRole('EMPLOYE')")
 	public ResponseEntity<?> getTicketEnCoursByEmploye(){
@@ -300,8 +300,7 @@ public class TicketsController {
 		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Personne personne  = personneRepository.findById(userDetails.getId()).get();
 		Travail travail = travailRepository.findByEmploye(personne.getId());
-		System.out.println(travail);
-		Ticket ticket = ticketService.findTicketEnCoursByEmploye(travail.getId().getIdService().getId());
+		Ticket ticket = ticketService.findTicketEnCoursByEmploye(travail.getId().getIdService().getId(),travail.getId().getIdMunicipalite().getId());
 		
 		return ResponseEntity.ok().body(ticket);
 		

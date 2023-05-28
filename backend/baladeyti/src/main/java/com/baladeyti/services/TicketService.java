@@ -139,8 +139,11 @@ public void updateAnnuleTicket(int idTicket) {
 		
 		
 		
-		public Ticket findTicketEnCoursByEmploye(int idService) {
-			return ticketRepository.findTicketEnCoursByEmploye(idService);
+		public Ticket findTicketEnCoursByEmploye(int idService,int idMunicipalite) {
+			return ticketRepository.findTicketEnCoursByService(idService,idMunicipalite);
+			
+			
+			
 		}
 
 

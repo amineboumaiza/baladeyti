@@ -18,5 +18,7 @@ public class EmployeRequest {
 	private Personne personne;
 	@NotBlank
 	private int idService;
+	@NotBlank
+	private int idMunicipalite;
 	
 }
