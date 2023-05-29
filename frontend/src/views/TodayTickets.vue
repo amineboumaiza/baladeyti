@@ -70,15 +70,14 @@ export default {
         const body = JSON.parse(message.body);
         console.log("Received message:", body);
 
-        //FONCTION ILLY TRAJA3LEK FL POSITION
+      //  FONCTION ILLY TRAJA3LEK FL POSITION
         let pos = document.getElementById("pos"+body.idTicket);
         pos.innerHTML = "Position : "+body.pos
 
        if (body.pos == 0){
         let etat = document.getElementById("etat"+body.idTicket);
        etat.innerHTML = "EN COURS"
-       }
-        
+      }
       });
     });
     },
