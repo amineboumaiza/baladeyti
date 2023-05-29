@@ -100,6 +100,8 @@ public class TicketsController {
 	public ResponseEntity<?> annulerTicket(@PathVariable int id){
 		
 		Ticket ticket = ticketService.findById(id);
+		if(ticket.getEtat() == Eetat.traité)
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Votre ticket ne peut pas etre annulée");
 		UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Personne personne  = personneRepository.findById(userDetails.getId()).get();
 		
