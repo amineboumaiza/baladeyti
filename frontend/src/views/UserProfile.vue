@@ -1,6 +1,7 @@
 <template>
 
 <div class="container-fluid">
+  <div class="row"></div>
             <div v-if="user" class=" col-md-6 card">
                 <div class="row">
                     <div class="col-3">
